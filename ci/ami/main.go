@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 
@@ -118,11 +119,17 @@ func main() {
 			check(err)
 			log.Printf("Info: Created \"AMIBuildConfig.json\" K8s versions \"%s\"", latestAMIBuildConfig.K8sReleases)
 
-			os.Setenv("K8S_UPDATED", "true")
+			err = exec.Command("K8S_UPDATED=true", ">>", "$GITHUB_ENV").Run()
+			check(err)
+			err = exec.Command("echo", "$K8S_UPDATED").Run()
+			check(err)
 
 			return
 		} else {
-			os.Setenv("K8S_UPDATED", "false")
+			err = exec.Command("K8S_UPDATED=false", ">>", "$GITHUB_ENV").Run()
+			check(err)
+			err = exec.Command("echo", "$K8S_UPDATED").Run()
+			check(err)
 
 			log.Fatal(err)
 		}
@@ -143,8 +150,13 @@ func main() {
 	}
 
 	if updated {
-		os.Setenv("K8S_UPDATED", "true")
+		err = exec.Command("K8S_UPDATED=true", ">>", "$GITHUB_ENV").Run()
+		check(err)
 	} else {
-		os.Setenv("K8S_UPDATED", "false")
+		err = exec.Command("K8S_UPDATED=false", ">>", "$GITHUB_ENV").Run()
+		check(err)
 	}
+
+	err = exec.Command("echo", "$K8S_UPDATED").Run()
+	check(err)
 }
