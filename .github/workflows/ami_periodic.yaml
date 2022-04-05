@@ -26,5 +26,5 @@ jobs:
   open_pr:
     needs: watch_k8s_releases
     runs-on: ubuntu-latest
-      steps:
-      - run: 'echo Open PR: ${{needs.watch_k8s_releases.outputs.updated}}'
+    steps:
+    - run: 'echo Open PR: ${{needs.watch_k8s_releases.outputs.updated}}'
