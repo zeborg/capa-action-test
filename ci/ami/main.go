@@ -122,6 +122,8 @@ func main() {
 
 			return
 		} else {
+			os.Setenv("K8S_UPDATED", "false")
+
 			log.Fatal(err)
 		}
 	}
@@ -142,5 +144,7 @@ func main() {
 
 	if updated {
 		os.Setenv("K8S_UPDATED", "true")
+	} else {
+		os.Setenv("K8S_UPDATED", "false")
 	}
 }
