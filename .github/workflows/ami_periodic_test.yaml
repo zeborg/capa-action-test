@@ -31,7 +31,7 @@ jobs:
         fi
   open_pr:
     needs: watch_k8s_releases
-    if: needs.watch_k8s_releases.outputs.updated == 'true'
+    if: ${{ needs.watch_k8s_releases.outputs.updated }} == 'true'
     runs-on: ubuntu-latest
     steps:
     - run: echo Updated
