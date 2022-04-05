@@ -19,7 +19,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Do some work
-      run: echo "${{ github.event.inputs.message }}" > message.txt
+      run: echo "${{ github.event.push.push_id }}" > message.txt
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v4
       with:
