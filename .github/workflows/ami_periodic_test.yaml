@@ -20,7 +20,8 @@ jobs:
     - name: Compare K8s versions in `AMIBuildConfig.json`
       id: compare
       run: |
-        go run ci/ami/main.go
+        cd ci/ami
+        go run main.go
     - name: Echo env
       if: env.K8S_UPDATED == 'true'
       run: echo "::set-output name=updated::true"
