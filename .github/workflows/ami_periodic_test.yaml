@@ -22,6 +22,7 @@ jobs:
       run: |
         cd ci/ami
         go run main.go
+
         if [[ $K8S_UPDATED == "true" ]]
         then
           echo "::set-output name=updated::true"
@@ -30,6 +31,7 @@ jobs:
         fi
   open_pr:
     needs: watch_k8s_releases
+    if: needs.watch_k8s_releases.outputs.updated == 'true'
     runs-on: ubuntu-latest
     steps:
-    - run: echo ${{needs.watch_k8s_releases.outputs.updated}}
+    - run: echo Updated
