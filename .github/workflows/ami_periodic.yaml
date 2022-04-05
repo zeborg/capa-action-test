@@ -1,0 +1,30 @@
+on:
+  schedule:
+    - cron: '1/2 * * * *'
+
+jobs:
+  watch_k8s_releases:
+    runs-on: ubuntu-latest
+    outputs:
+      updated: steps.compare.outputs.updated
+    steps:
+    - name: Checkout
+      uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # v2.4.0
+
+    - name: Set up Go 
+      uses: actions/setup-go@424fc82d43fa5a37540bae62709ddcc23d9520d4 # v2.1.5
+      with:
+        go-version: 1.17
+
+    - name: Compare K8s versions in `AMIBuildConfig.json`
+      id: compare
+      run: |
+        go run ci/ami/main.go
+    - name: Echo env
+      if: env.K8S_UPDATED == 'true'
+      run: echo "::set-output name=updated::true"
+  open_pr:
+    needs: watch_k8s_releases
+    runs-on: ubuntu-latest
+      steps:
+      - run: 'echo Open PR: ${{needs.watch_k8s_releases.outputs.updated}}'
