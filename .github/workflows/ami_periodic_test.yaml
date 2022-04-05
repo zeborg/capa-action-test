@@ -22,7 +22,10 @@ jobs:
       run: |
         cd ci/ami
         go run main.go
-    - name: Echo env
+    - name: Env false
+      if: env.K8S_UPDATED == 'false'
+      run: echo "::set-output name=updated::false"
+    - name: Env true
       if: env.K8S_UPDATED == 'true'
       run: echo "::set-output name=updated::true"
   open_pr:
