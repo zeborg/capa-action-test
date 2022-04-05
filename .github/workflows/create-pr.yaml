@@ -1,0 +1,29 @@
+name: test
+
+on:
+  push:
+    branches:
+      test-pr
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  testpr:
+    name: test pr creation
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Checkout"
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Do some work
+      run: echo "${{ github.event.inputs.message }}" > message.txt
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
+      with:
+        commit-message: Update message
+        title: Update message
+        body: |
+          - User request update of message 
