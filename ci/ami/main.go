@@ -115,16 +115,16 @@ func main() {
 	echoExecPath, err := exec.LookPath("echo")
 	check(err)
 
-	exportCmdTrue := &exec.Cmd{
+	echoCmdTrue := &exec.Cmd{
 		Path:   echoExecPath,
-		Args:   []string{echoExecPath, "K8S_UPDATED=true", ">>", "$GITHUB_ENV"},
+		Args:   []string{echoExecPath, "::set-output", "name=updated::true"},
 		Stdout: os.Stdout,
 		Stderr: os.Stdout,
 	}
 
-	exportCmdFalse := &exec.Cmd{
+	echoCmdFalse := &exec.Cmd{
 		Path:   echoExecPath,
-		Args:   []string{echoExecPath, "K8S_UPDATED=false", ">>", "$GITHUB_ENV"},
+		Args:   []string{echoExecPath, "::set-output", "name=updated::false"},
 		Stdout: os.Stdout,
 		Stderr: os.Stdout,
 	}
@@ -136,12 +136,12 @@ func main() {
 			check(err)
 			log.Printf("Info: Created \"AMIBuildConfig.json\" K8s versions \"%s\"", latestAMIBuildConfig.K8sReleases)
 
-			err = exportCmdTrue.Run()
+			err = echoCmdTrue.Run()
 			check(err)
 
 			return
 		} else {
-			err = exportCmdFalse.Run()
+			err = echoCmdFalse.Run()
 			check(err)
 
 			log.Fatal(err)
@@ -163,10 +163,10 @@ func main() {
 	}
 
 	if updated {
-		err = exportCmdTrue.Run()
+		err = echoCmdTrue.Run()
 		check(err)
 	} else {
-		err = exportCmdFalse.Run()
+		err = echoCmdFalse.Run()
 		check(err)
 	}
 }

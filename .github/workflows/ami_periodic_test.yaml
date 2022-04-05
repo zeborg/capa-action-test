@@ -23,14 +23,12 @@ jobs:
         cd ci/ami
         go run main.go
 
-        if [[ "$K8S_UPDATED" == "true" ]]
-        then
-          echo "::set-output name=updated::true"
-        else
-          echo "::set-output name=updated::false"
-        fi
-
-        echo $K8S_UPDATED
+        # if [[ ${{ env.K8S_UPDATED }} == "true" ]]
+        # then
+        #   echo "::set-output name=updated::true"
+        # else
+        #   echo "::set-output name=updated::false"
+        # fi
 
   open_pr:
     needs: watch_k8s_releases
