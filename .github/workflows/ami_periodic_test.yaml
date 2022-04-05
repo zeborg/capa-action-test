@@ -22,14 +22,14 @@ jobs:
       run: |
         cd ci/ami
         go run main.go
-    - name: Env false
-      if: env.K8S_UPDATED == 'false'
-      run: echo "::set-output name=updated::false"
-    - name: Env true
-      if: env.K8S_UPDATED == 'true'
-      run: echo "::set-output name=updated::true"
+        if [ $K8S_UPDATED == "true" ]
+        then
+          echo "::set-output name=updated::true"
+        else
+          echo "::set-output name=updated::false"
+        fi
   open_pr:
     needs: watch_k8s_releases
     runs-on: ubuntu-latest
     steps:
-    - run: 'echo Open PR: ${{needs.watch_k8s_releases.outputs.updated}}'
+    - run: echo ${{needs.watch_k8s_releases.outputs.updated}}
