@@ -37,11 +37,11 @@ jobs:
     if: ${{ needs.watch_k8s_releases.outputs.updated }} == "true"
     runs-on: ubuntu-latest
     steps:
-    - run: echo Updated
+    - run: echo ${{ needs.watch_k8s_releases.outputs.updated }}
   
   dont_open_pr:
     needs: watch_k8s_releases
     if: ${{ needs.watch_k8s_releases.outputs.updated }} == "false"
     runs-on: ubuntu-latest
     steps:
-    - run: echo Not updated
+    - run: echo ${{ needs.watch_k8s_releases.outputs.updated }}
