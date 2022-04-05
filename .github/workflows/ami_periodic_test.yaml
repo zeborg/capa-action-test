@@ -22,7 +22,7 @@ jobs:
       run: |
         cd ci/ami
         go run main.go
-        if [ $K8S_UPDATED == "true" ]
+        if [[ $K8S_UPDATED == "true" ]]
         then
           echo "::set-output name=updated::true"
         else
