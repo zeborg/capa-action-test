@@ -1,6 +1,7 @@
 on:
-  schedule:
-    - cron: '1/2 * * * *'
+  push:
+    branches:
+      - 'test'
 
 jobs:
   watch_k8s_releases:
