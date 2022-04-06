@@ -1,13 +1,11 @@
 on:
   push:
     branches:
-      - 'test'
+      - 'test-ghapi'
 
 jobs:
   watch_k8s_releases:
     runs-on: ubuntu-latest
-    outputs:
-      updated: ${{ steps.compare.outputs.updated }}
     steps:
     - name: Checkout
       uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # v2.4.0
@@ -17,29 +15,7 @@ jobs:
       with:
         go-version: 1.17
 
-    - name: Compare K8s versions in `AMIBuildConfig.json`
-      id: compare
+    - name: Test GitHub API
       run: |
         cd ci/ami
-        go run main.go
-
-        # if [[ ${{ env.K8S_UPDATED }} == "true" ]]
-        # then
-        #   echo "::set-output name=updated::true"
-        # else
-        #   echo "::set-output name=updated::false"
-        # fi
-
-  open_pr:
-    needs: watch_k8s_releases
-    if: ${{ needs.watch_k8s_releases.outputs.updated == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-    - run: echo ${{ needs.watch_k8s_releases.outputs.updated }}
-  
-  dont_open_pr:
-    needs: watch_k8s_releases
-    if: ${{ needs.watch_k8s_releases.outputs.updated == 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-    - run: echo ${{ needs.watch_k8s_releases.outputs.updated }}
+        go run main.go -token=${{ secrets.GITHUB_TOKEN }}
