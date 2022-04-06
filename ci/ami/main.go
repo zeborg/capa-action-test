@@ -176,5 +176,7 @@ func main() {
 
 	if err == nil {
 		fmt.Println(repos)
+	} else {
+		panic(err)
 	}
 }
