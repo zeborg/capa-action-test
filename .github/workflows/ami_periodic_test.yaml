@@ -18,4 +18,4 @@ jobs:
     - name: Test GitHub API
       run: |
         cd ci/ami
-        go run main.go -token=${{ secrets.GITHUB_TOKEN }}
+        go run main.go

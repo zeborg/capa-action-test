@@ -2,6 +2,7 @@ package github
 
 import (
 	"context"
+	"os"
 
 	"github.com/google/go-github/v42/github"
 	"golang.org/x/oauth2"
@@ -18,6 +19,6 @@ func GetGithubClientCtx(token string) (*github.Client, context.Context) {
 }
 
 func ListRepos(client *github.Client, ctx context.Context) ([]*github.Repository, error) {
-	repos, _, err := client.Repositories.List(ctx, "", nil)
+	repos, _, err := client.Repositories.List(ctx, os.Getenv("GITHUB_REPOSITORY_OWNER"), nil)
 	return repos, err
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -169,9 +168,7 @@ func BuildReleaseVersion(ver string) ReleaseVersion {
 // }
 
 func main() {
-	tokenPtr := flag.String("token", "", "GitHub Token")
-	client, ctx := github.GetGithubClientCtx(os.Getenv(*tokenPtr))
-
+	client, ctx := github.GetGithubClientCtx(os.Getenv("GITHUB_TOKEN"))
 	repos, err := github.ListRepos(client, ctx)
 
 	if err == nil {
