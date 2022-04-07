@@ -56,7 +56,7 @@ func CreateIssue(client *github.Client, ctx context.Context) (*github.Issue, err
 }
 
 func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, error) {
-	var strPtr *string
+	var strPtr = new(string)
 	*strPtr = "test-ref"
 
 	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, os.Getenv("GITHUB_BASE_REF"))
