@@ -34,7 +34,7 @@ func CreateIssue(client *github.Client, ctx context.Context) {
 		Title:    "Test issue",
 		Body:     "Test issue body",
 		Labels:   []string{"test-issue-label"},
-		Assignee: "zeborg",
+		Assignee: "",
 	}
 	testIssue := &github.IssueRequest{
 		Title:    &MyIssue.Title,
