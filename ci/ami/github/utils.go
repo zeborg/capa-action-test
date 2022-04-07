@@ -60,7 +60,12 @@ func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, e
 	*strPtr = "test-ref"
 
 	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, os.Getenv("GITHUB_BASE_REF"))
-	log.Println("Ref ", *ref.Ref)
+
+	for ref.Ref == nil {
+		continue
+	}
+
+	log.Println("Ref ", ref)
 
 	newRef := github.Reference{
 		Ref:    strPtr,
