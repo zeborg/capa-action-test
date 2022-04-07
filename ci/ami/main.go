@@ -178,5 +178,17 @@ func main() {
 	// 	panic(err)
 	// }
 
-	github.CreateIssue(client, ctx)
+	// issue, err := github.CreateIssue(client, ctx)
+	// if err == nil {
+	// 	log.Println(issue)
+	// } else {
+	// 	log.Fatal(err)
+	// }
+
+	ref, err := github.CreateRef(client, ctx)
+	if err == nil {
+		log.Println(ref)
+	} else {
+		log.Fatal(err)
+	}
 }

@@ -2,11 +2,18 @@ package github
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"os"
 	"strings"
 
 	"github.com/google/go-github/v42/github"
 	"golang.org/x/oauth2"
+)
+
+var (
+	OWNER = os.Getenv("GITHUB_REPOSITORY_OWNER")
+	REPO  = strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")[1]
 )
 
 func GetGithubClientCtx(token string) (*github.Client, context.Context) {
@@ -24,7 +31,7 @@ func ListRepos(client *github.Client, ctx context.Context) ([]*github.Repository
 	return repos, err
 }
 
-func CreateIssue(client *github.Client, ctx context.Context) {
+func CreateIssue(client *github.Client, ctx context.Context) (*github.Issue, error) {
 	MyIssue := struct {
 		Title    string
 		Body     string
@@ -43,6 +50,22 @@ func CreateIssue(client *github.Client, ctx context.Context) {
 		Assignee: &MyIssue.Assignee,
 	}
 
-	repoSplit := strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")
-	client.Issues.Create(ctx, repoSplit[0], repoSplit[1], testIssue)
+	issue, _, err := client.Issues.Create(ctx, OWNER, REPO, testIssue)
+
+	return issue, err
+}
+
+func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, error) {
+	testRef := "test-ref"
+	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, os.Getenv("GITHUB_BASE_REF"))
+	ref.Ref = &testRef
+
+	if err == nil {
+		fmt.Println(ref)
+	} else {
+		log.Fatal(err)
+	}
+
+	refNew, _, err := client.Git.CreateRef(ctx, OWNER, REPO, ref)
+	return refNew, err
 }
