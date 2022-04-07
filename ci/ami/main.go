@@ -168,6 +168,7 @@ func BuildReleaseVersion(ver string) ReleaseVersion {
 // }
 
 func main() {
+	fmt.Println(os.Getenv("GITHUB_REPOSITORY"))
 	client, ctx := github.GetGithubClientCtx(os.Getenv("GITHUB_TOKEN"))
 	repos, err := github.ListRepos(client, ctx)
 
