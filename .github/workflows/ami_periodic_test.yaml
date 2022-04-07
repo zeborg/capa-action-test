@@ -2,6 +2,9 @@ on:
   push:
     branches:
       - 'test-ghapi'
+  pull_request:
+    branches:
+      - 'test-ghapi'
 
 jobs:
   watch_k8s_releases:
