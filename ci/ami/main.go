@@ -187,14 +187,37 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	ref, err := gh.CreateRef(client, ctx)
+	ref, _, err := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
 	if err == nil {
-		log.Println(ref)
+		if ref == nil {
+			ref, err = gh.CreateRef(client, ctx)
+			if err == nil {
+				log.Println(ref)
+			} else {
+				log.Fatal(err)
+			}
+		}
 	} else {
 		log.Fatal(err)
 	}
 
-	ref, _, _ = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
+	// 1. GET A REFERENCE TO HEAD
+	ref, _, err = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
+	if err == nil {
+		fmt.Println("REFERENCE TO HEAD: ", ref)
+	} else {
+		log.Fatal(err)
+	}
+
+	// 2. GRAB THE COMMIT THAT HEAD POINTS TO
+	parentCommit, _, err := client.Git.GetCommit(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA)
+	if err == nil {
+		fmt.Println("HEAD Commit: ", parentCommit)
+	} else {
+		log.Fatal(err)
+	}
+
+	// 3. POST YOUR NEW FILE TO THE SERVER
 	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content`))
 	fmt.Println("Base64 encoded blobContent: ", blobContent)
 	encoding := "base64"
@@ -214,20 +237,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	parentCommit, _, err := client.Git.GetCommit(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA)
-	if err == nil {
-		fmt.Println("HEAD Commit: ", parentCommit)
-	} else {
-		log.Fatal(err)
-	}
-
-	baseTree, _, err := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *parentCommit.SHA, true)
+	// 4. GET A HOLD OF THE TREE THAT THE COMMIT IN STEP 2. POINTS TO
+	baseTree, _, err := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *parentCommit.Tree.SHA, true)
 	if err == nil {
 		fmt.Println(baseTree)
 	} else {
 		log.Fatal(err)
 	}
 
+	// 5. CREATE A TREE CONTAINING YOUR NEW / UPDATED FILE
 	treePath := "ci/ami/AMIBuildConfig.json"
 	treeMode := "100644"
 	testTreeEntry := github.TreeEntry{
@@ -243,6 +261,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// 6. CREATE A NEW COMMIT
 	commitMsg := "Test commit"
 	newCommit := github.Commit{
 		Message: &commitMsg,
@@ -257,6 +276,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// 7. UPDATE HEAD
 	updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
 	if err == nil {
 		fmt.Println(updateRef)
