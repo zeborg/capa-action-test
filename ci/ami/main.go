@@ -7,7 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/zeborg/capa-action-test/github"
+	"github.com/google/go-github/v42/github"
+	gh "github.com/zeborg/capa-action-test/github"
 )
 
 func check(err error) {
@@ -169,7 +170,7 @@ func BuildReleaseVersion(ver string) ReleaseVersion {
 
 func main() {
 	fmt.Println(os.Getenv("GITHUB_REPOSITORY"))
-	client, ctx := github.GetGithubClientCtx(os.Getenv("GITHUB_TOKEN"))
+	client, ctx := gh.GetGithubClientCtx(os.Getenv("GITHUB_TOKEN"))
 
 	// repos, err := github.ListRepos(client, ctx)
 	// if err == nil {
@@ -192,8 +193,35 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	ref, _, _ := client.Git.GetRef(ctx, github.OWNER, github.REPO, "refs/heads/test-ghapi")
-	tree, _, _ := client.Git.GetTree(ctx, github.OWNER, github.REPO, *ref.Object.SHA, true)
+	ref, _, _ := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
+	// tree, _, _ := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA, true)
 
-	fmt.Println(tree)
+	treePath := "ci/ami/AMIBuildConfig.json"
+	treeContent := "Test content"
+	testTreeEntry := github.TreeEntry{
+		Path:    &treePath,
+		Content: &treeContent,
+	}
+
+	newTree, _, err := client.Git.CreateTree(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA, []*github.TreeEntry{&testTreeEntry})
+
+	if err == nil {
+		fmt.Println(newTree)
+	} else {
+		log.Fatal(err)
+	}
+
+	commitMsg := "Test commit"
+	newCommit := github.Commit{
+		Message: &commitMsg,
+		Tree:    newTree,
+	}
+
+	commit, _, err := client.Git.CreateCommit(ctx, gh.OWNER, gh.REPO, &newCommit)
+
+	if err == nil {
+		fmt.Println(commit)
+	} else {
+		log.Fatal(err)
+	}
 }
