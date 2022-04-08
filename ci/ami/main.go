@@ -279,6 +279,12 @@ func main() {
 	}
 
 	// 7. UPDATE HEAD
+	ref, _, err = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/test-ref/HEAD")
+	if err == nil {
+		fmt.Println("REFERENCE TO HEAD: ", ref)
+	} else {
+		log.Fatal(err)
+	}
 	updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
 	if err == nil {
 		fmt.Println(updateRef)
