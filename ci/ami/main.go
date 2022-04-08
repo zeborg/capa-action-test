@@ -224,7 +224,7 @@ func main() {
 	}
 
 	// 3. POST YOUR NEW FILE TO THE SERVER
-	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content v3`))
+	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content v4`))
 	fmt.Println("Base64 encoded blobContent: ", blobContent)
 	encoding := "base64"
 	newBlob := github.Blob{
@@ -270,7 +270,7 @@ func main() {
 	// 6. CREATE A NEW COMMIT
 	commitMsg := "Test commit"
 	commitAuthorName := "capa-ami-build-action"
-	commitAuthorEmail := "abc@adugigdisabdjasj.com"
+	commitAuthorEmail := "actions@github.com"
 	commitAuthor := github.CommitAuthor{
 		Name:  &commitAuthorName,
 		Email: &commitAuthorEmail,
