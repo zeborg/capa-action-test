@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/google/go-github/v42/github"
 	"golang.org/x/oauth2"
@@ -57,15 +56,13 @@ func CreateIssue(client *github.Client, ctx context.Context) (*github.Issue, err
 }
 
 func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, error) {
-	var strPtr = new(string)
-	*strPtr = "test-ref"
+	testRef := "refs/heads/test-ref"
 
-	ref, _, err := client.Git.GetRef(ctx, "zeborg", "capa-action-test", "refs/heads/test-ghapi")
-	time.Sleep(5 * time.Second)
+	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, "refs/heads/"+os.Getenv("GITHUB_BASE_REF"))
 	log.Println("Ref ", ref)
 
 	newRef := github.Reference{
-		Ref:    strPtr,
+		Ref:    &testRef,
 		URL:    ref.URL,
 		Object: ref.Object,
 		NodeID: ref.NodeID,
