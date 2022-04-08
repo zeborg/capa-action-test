@@ -185,10 +185,15 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	ref, err := github.CreateRef(client, ctx)
-	if err == nil {
-		log.Println(ref)
-	} else {
-		log.Fatal(err)
-	}
+	// ref, err := github.CreateRef(client, ctx)
+	// if err == nil {
+	// 	log.Println(ref)
+	// } else {
+	// 	log.Fatal(err)
+	// }
+
+	ref, _, _ := client.Git.GetRef(ctx, github.OWNER, github.REPO, "refs/heads/test-ghapi")
+	tree, _, _ := client.Git.GetTree(ctx, github.OWNER, github.REPO, *ref.Object.SHA, true)
+
+	fmt.Println(tree)
 }
