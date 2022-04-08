@@ -18,6 +18,10 @@ func check(err error) {
 	}
 }
 
+type updateRefRequest struct {
+	SHA   *string `json:"sha"`
+	Force *bool   `json:"force"`
+}
 type AMIBuildConfig struct {
 	K8sReleases map[string]string `json:"k8s_releases"`
 }
@@ -279,16 +283,35 @@ func main() {
 	}
 
 	// 7. UPDATE HEAD
-	ref, _, err = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/test-ref/HEAD")
-	if err == nil {
-		fmt.Println("REFERENCE TO HEAD: ", ref)
-	} else {
+	// ref, _, err = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/test-ref/HEAD")
+	// if err == nil {
+	// 	fmt.Println("REFERENCE TO HEAD: ", ref)
+	// } else {
+	// 	log.Fatal(err)
+	// }
+
+	force := true
+
+	httpReq, err := client.NewRequest("PATCH", "repos/zeborg/capa-action-test/git/refs/test-ref/HEAD", &updateRefRequest{
+		SHA:   ref.Object.SHA,
+		Force: &force,
+	})
+	if err != nil {
 		log.Fatal(err)
 	}
-	updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
-	if err == nil {
-		fmt.Println(updateRef)
-	} else {
+
+	refReq := new(github.Reference)
+	_, err = client.Do(ctx, httpReq, refReq)
+	if err != nil {
 		log.Fatal(err)
 	}
+
+	// updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
+	// if err == nil {
+	// 	fmt.Println(updateRef)
+	// } else {
+	// 	log.Fatal(err)
+	// }
+
+	fmt.Println(refReq)
 }
