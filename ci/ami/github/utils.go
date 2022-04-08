@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	OWNER = os.Getenv("GITHUB_REPOSITORY_OWNER")
+	OWNER = strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")[0]
 	REPO  = strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")[1]
 )
 
