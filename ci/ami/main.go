@@ -232,4 +232,11 @@ func main() {
 	} else {
 		log.Fatal(err)
 	}
+
+	updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
+	if err == nil {
+		fmt.Println(updateRef)
+	} else {
+		log.Fatal(err)
+	}
 }
