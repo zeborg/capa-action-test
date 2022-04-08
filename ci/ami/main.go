@@ -224,7 +224,7 @@ func main() {
 	}
 
 	// 3. POST YOUR NEW FILE TO THE SERVER
-	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content v2`))
+	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content v3`))
 	fmt.Println("Base64 encoded blobContent: ", blobContent)
 	encoding := "base64"
 	newBlob := github.Blob{
@@ -269,10 +269,17 @@ func main() {
 
 	// 6. CREATE A NEW COMMIT
 	commitMsg := "Test commit"
+	commitAuthorName := "capa-ami-build-action"
+	commitAuthor := github.CommitAuthor{
+		Name: &commitAuthorName,
+	}
+
 	newCommit := github.Commit{
-		Message: &commitMsg,
-		Tree:    newTree,
-		Parents: []*github.Commit{parentCommit},
+		Author:    &commitAuthor,
+		Committer: &commitAuthor,
+		Message:   &commitMsg,
+		Tree:      newTree,
+		Parents:   []*github.Commit{parentCommit},
 	}
 
 	commit, _, err := client.Git.CreateCommit(ctx, gh.OWNER, gh.REPO, &newCommit)
@@ -294,7 +301,6 @@ func main() {
 	ref.Object.SHA = commit.SHA
 	ref.Object.URL = commit.URL
 	ref.Object.Type = &commitType
-	ref.NodeID = nil
 
 	updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
 	if err == nil {
