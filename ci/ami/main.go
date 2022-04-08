@@ -214,7 +214,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	baseTree, _, err := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA, true)
+	parentCommit, _, err := client.Git.GetCommit(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA)
+	if err == nil {
+		fmt.Println("HEAD Commit: ", commit)
+	} else {
+		log.Fatal(err)
+	}
+
+	baseTree, _, err := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *commit.SHA, true)
 	if err == nil {
 		fmt.Println(baseTree)
 	} else {
@@ -230,29 +237,22 @@ func main() {
 	}
 
 	newTree, _, err := client.Git.CreateTree(ctx, gh.OWNER, gh.REPO, *baseTree.SHA, []*github.TreeEntry{&testTreeEntry})
-
 	if err == nil {
 		fmt.Println(newTree)
 	} else {
 		log.Fatal(err)
 	}
 
-	parentCommit, _, err := client.Git.GetCommit(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA)
+	commitMsg := "Test commit"
+	newCommit := github.Commit{
+		Message: &commitMsg,
+		Tree:    newTree,
+		Parents: []*github.Commit{parentCommit},
+	}
+
+	commit, _, err := client.Git.CreateCommit(ctx, gh.OWNER, gh.REPO, &newCommit)
 	if err == nil {
-		commitMsg := "Test commit"
-		newCommit := github.Commit{
-			Message: &commitMsg,
-			Tree:    newTree,
-			Parents: []*github.Commit{parentCommit},
-		}
-
-		commit, _, err := client.Git.CreateCommit(ctx, gh.OWNER, gh.REPO, &newCommit)
-
-		if err == nil {
-			fmt.Println(commit)
-		} else {
-			log.Fatal(err)
-		}
+		fmt.Println(commit)
 	} else {
 		log.Fatal(err)
 	}
