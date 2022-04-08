@@ -190,7 +190,7 @@ func main() {
 	baseRef, headRef := "refs/heads/test-ghapi", "refs/heads/test-ref"
 
 	ref, _, err := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, baseRef)
-	if err == nil {
+	if err != nil {
 		if ref == nil {
 			ref, err = gh.CreateRef(client, ctx, "refs/heads/test-ghapi", headRef)
 			if err == nil {
@@ -198,9 +198,9 @@ func main() {
 			} else {
 				log.Fatal(err)
 			}
+		} else {
+			log.Fatal(err)
 		}
-	} else {
-		log.Fatal(err)
 	}
 
 	// 1. GET A REFERENCE TO HEAD
