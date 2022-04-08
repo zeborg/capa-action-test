@@ -283,35 +283,23 @@ func main() {
 	}
 
 	// 7. UPDATE HEAD
-	// ref, _, err = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/test-ref/HEAD")
-	// if err == nil {
-	// 	fmt.Println("REFERENCE TO HEAD: ", ref)
-	// } else {
-	// 	log.Fatal(err)
-	// }
-
-	force := true
-
-	httpReq, err := client.NewRequest("PATCH", "repos/zeborg/capa-action-test/git/refs/heads/test-ref", &updateRefRequest{
-		SHA:   ref.Object.SHA,
-		Force: &force,
-	})
-	if err != nil {
+	ref, _, err = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/test-ref")
+	if err == nil {
+		fmt.Println("REFERENCE TO HEAD: ", ref)
+	} else {
 		log.Fatal(err)
 	}
 
-	refReq := new(github.Reference)
-	_, err = client.Do(ctx, httpReq, refReq)
-	if err != nil {
+	commitType := "string"
+	ref.Object.SHA = commit.SHA
+	ref.Object.URL = commit.URL
+	ref.Object.Type = &commitType
+
+	updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
+	if err == nil {
+		fmt.Println(updateRef)
+	} else {
 		log.Fatal(err)
 	}
 
-	// updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
-	// if err == nil {
-	// 	fmt.Println(updateRef)
-	// } else {
-	// 	log.Fatal(err)
-	// }
-
-	fmt.Println(refReq)
 }
