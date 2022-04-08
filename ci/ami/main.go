@@ -216,12 +216,12 @@ func main() {
 
 	parentCommit, _, err := client.Git.GetCommit(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA)
 	if err == nil {
-		fmt.Println("HEAD Commit: ", commit)
+		fmt.Println("HEAD Commit: ", parentCommit)
 	} else {
 		log.Fatal(err)
 	}
 
-	baseTree, _, err := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *commit.SHA, true)
+	baseTree, _, err := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *parentCommit.SHA, true)
 	if err == nil {
 		fmt.Println(baseTree)
 	} else {
