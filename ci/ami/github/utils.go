@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/google/go-github/v42/github"
 	"golang.org/x/oauth2"
@@ -60,11 +61,7 @@ func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, e
 	*strPtr = "test-ref"
 
 	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, os.Getenv("GITHUB_BASE_REF"))
-
-	for ref == nil {
-		continue
-	}
-
+	time.Sleep(5 * time.Second)
 	log.Println("Ref ", ref)
 
 	newRef := github.Reference{
