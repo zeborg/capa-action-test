@@ -270,8 +270,10 @@ func main() {
 	// 6. CREATE A NEW COMMIT
 	commitMsg := "Test commit"
 	commitAuthorName := "capa-ami-build-action"
+	commitAuthorEmail := "zeborg3@gmail.com"
 	commitAuthor := github.CommitAuthor{
-		Name: &commitAuthorName,
+		Name:  &commitAuthorName,
+		Email: &commitAuthorEmail,
 	}
 
 	newCommit := github.Commit{
