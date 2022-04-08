@@ -189,10 +189,10 @@ func main() {
 
 	baseRef, headRef := "refs/heads/test-ghapi", "refs/heads/test-ref"
 
-	ref, _, err := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, baseRef)
+	ref, _, err := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, headRef)
 	if err != nil {
 		if ref == nil {
-			ref, err = gh.CreateRef(client, ctx, "refs/heads/test-ghapi", headRef)
+			ref, err = gh.CreateRef(client, ctx, baseRef, headRef)
 			if err == nil {
 				log.Println(ref)
 			} else {
