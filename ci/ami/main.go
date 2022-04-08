@@ -213,16 +213,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	commitMsg := "Test commit"
-	newCommit := github.Commit{
-		Message: &commitMsg,
-		Tree:    newTree,
-	}
-
-	commit, _, err := client.Git.CreateCommit(ctx, gh.OWNER, gh.REPO, &newCommit)
-
+	parentCommit, _, err := client.Git.GetCommit(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA)
 	if err == nil {
-		fmt.Println(commit)
+		commitMsg := "Test commit"
+		newCommit := github.Commit{
+			Message: &commitMsg,
+			Tree:    newTree,
+			Parents: []*github.Commit{parentCommit},
+		}
+
+		commit, _, err := client.Git.CreateCommit(ctx, gh.OWNER, gh.REPO, &newCommit)
+
+		if err == nil {
+			fmt.Println(commit)
+		} else {
+			log.Fatal(err)
+		}
 	} else {
 		log.Fatal(err)
 	}
