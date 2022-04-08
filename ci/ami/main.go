@@ -224,7 +224,7 @@ func main() {
 	}
 
 	// 3. POST YOUR NEW FILE TO THE SERVER
-	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content`))
+	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content v2`))
 	fmt.Println("Base64 encoded blobContent: ", blobContent)
 	encoding := "base64"
 	newBlob := github.Blob{
@@ -294,6 +294,7 @@ func main() {
 	ref.Object.SHA = commit.SHA
 	ref.Object.URL = commit.URL
 	ref.Object.Type = &commitType
+	ref.NodeID = nil
 
 	updateRef, _, err := client.Git.UpdateRef(ctx, gh.OWNER, gh.REPO, ref, true)
 	if err == nil {
