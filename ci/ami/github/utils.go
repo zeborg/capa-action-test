@@ -61,7 +61,7 @@ func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, e
 
 	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, os.Getenv("GITHUB_BASE_REF"))
 
-	for ref.Ref == nil {
+	for ref == nil {
 		continue
 	}
 
