@@ -60,7 +60,7 @@ func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, e
 	var strPtr = new(string)
 	*strPtr = "test-ref"
 
-	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, os.Getenv("GITHUB_BASE_REF"))
+	ref, _, err := client.Git.GetRef(ctx, "zeborg", "capa-action-test", "refs/heads/test-ghapi")
 	time.Sleep(5 * time.Second)
 	log.Println("Ref ", ref)
 
