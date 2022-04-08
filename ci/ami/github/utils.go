@@ -55,18 +55,17 @@ func CreateIssue(client *github.Client, ctx context.Context) (*github.Issue, err
 	return issue, err
 }
 
-func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, error) {
-	testRef := "refs/heads/test-ref"
-
-	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, "refs/heads/test-ghapi")
-	log.Println("Ref ", ref)
+func CreateRef(client *github.Client, ctx context.Context, fromRef, toRef string) (*github.Reference, error) {
+	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, fromRef)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	newRef := github.Reference{
-		Ref:    &testRef,
+		Ref:    &toRef,
 		URL:    ref.URL,
 		Object: ref.Object,
 	}
-
 	if err == nil {
 		fmt.Println(ref)
 	} else {

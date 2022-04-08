@@ -187,10 +187,12 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	ref, _, err := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
+	baseRef, headRef := "refs/heads/test-ghapi", "refs/heads/test-ref"
+
+	ref, _, err := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, baseRef)
 	if err == nil {
 		if ref == nil {
-			ref, err = gh.CreateRef(client, ctx)
+			ref, err = gh.CreateRef(client, ctx, "refs/heads/test-ghapi", headRef)
 			if err == nil {
 				log.Println(ref)
 			} else {
@@ -202,7 +204,7 @@ func main() {
 	}
 
 	// 1. GET A REFERENCE TO HEAD
-	ref, _, err = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
+	ref, _, err = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, headRef)
 	if err == nil {
 		fmt.Println("REFERENCE TO HEAD: ", ref)
 	} else {
@@ -232,7 +234,7 @@ func main() {
 		&newBlob,
 	)
 	if err == nil {
-		fmt.Println(blob)
+		fmt.Println("BLOBL_SHA: ", *blob.SHA, "\tBLOB_URL:", *blob.URL)
 	} else {
 		log.Fatal(err)
 	}
