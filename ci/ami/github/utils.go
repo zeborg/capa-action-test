@@ -58,14 +58,13 @@ func CreateIssue(client *github.Client, ctx context.Context) (*github.Issue, err
 func CreateRef(client *github.Client, ctx context.Context) (*github.Reference, error) {
 	testRef := "refs/heads/test-ref"
 
-	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, "refs/heads/"+os.Getenv("GITHUB_BASE_REF"))
+	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, "refs/heads/test-ghapi")
 	log.Println("Ref ", ref)
 
 	newRef := github.Reference{
 		Ref:    &testRef,
 		URL:    ref.URL,
 		Object: ref.Object,
-		NodeID: ref.NodeID,
 	}
 
 	if err == nil {
