@@ -292,7 +292,7 @@ func main() {
 
 	force := true
 
-	httpReq, err := client.NewRequest("PATCH", "repos/zeborg/capa-action-test/git/refs/test-ref/HEAD", &updateRefRequest{
+	httpReq, err := client.NewRequest("PATCH", "repos/zeborg/capa-action-test/git/refs/heads/test-ref", &updateRefRequest{
 		SHA:   ref.Object.SHA,
 		Force: &force,
 	})
