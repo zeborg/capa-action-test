@@ -198,9 +198,11 @@ func main() {
 
 	treePath := "ci/ami/AMIBuildConfig.json"
 	treeContent := "Test content"
+	treeMode := "100644"
 	testTreeEntry := github.TreeEntry{
 		Path:    &treePath,
 		Content: &treeContent,
+		Mode:    &treeMode,
 	}
 
 	newTree, _, err := client.Git.CreateTree(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA, []*github.TreeEntry{&testTreeEntry})
