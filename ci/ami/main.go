@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
@@ -194,18 +195,41 @@ func main() {
 	// }
 
 	ref, _, _ := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
-	// tree, _, _ := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA, true)
-
-	treePath := "ci/ami/AMIBuildConfig.json"
-	treeContent := "Test content"
-	treeMode := "100644"
-	testTreeEntry := github.TreeEntry{
-		Path:    &treePath,
-		Content: &treeContent,
-		Mode:    &treeMode,
+	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content`))
+	fmt.Println("Base64 encoded blobContent: ", blobContent)
+	encoding := "base64"
+	newBlob := github.Blob{
+		Content:  &blobContent,
+		Encoding: &encoding,
+	}
+	blob, _, err := client.Git.CreateBlob(
+		ctx,
+		gh.OWNER,
+		gh.REPO,
+		&newBlob,
+	)
+	if err == nil {
+		fmt.Println(blob)
+	} else {
+		log.Fatal(err)
 	}
 
-	newTree, _, err := client.Git.CreateTree(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA, []*github.TreeEntry{&testTreeEntry})
+	baseTree, _, err := client.Git.GetTree(ctx, gh.OWNER, gh.REPO, *ref.Object.SHA, true)
+	if err == nil {
+		fmt.Println(baseTree)
+	} else {
+		log.Fatal(err)
+	}
+
+	treePath := "ci/ami/AMIBuildConfig.json"
+	treeMode := "100644"
+	testTreeEntry := github.TreeEntry{
+		Path: &treePath,
+		Mode: &treeMode,
+		SHA:  blob.SHA,
+	}
+
+	newTree, _, err := client.Git.CreateTree(ctx, gh.OWNER, gh.REPO, *baseTree.SHA, []*github.TreeEntry{&testTreeEntry})
 
 	if err == nil {
 		fmt.Println(newTree)
