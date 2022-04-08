@@ -187,14 +187,14 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	// ref, err := github.CreateRef(client, ctx)
-	// if err == nil {
-	// 	log.Println(ref)
-	// } else {
-	// 	log.Fatal(err)
-	// }
+	ref, err := gh.CreateRef(client, ctx)
+	if err == nil {
+		log.Println(ref)
+	} else {
+		log.Fatal(err)
+	}
 
-	ref, _, _ := client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
+	ref, _, _ = client.Git.GetRef(ctx, gh.OWNER, gh.REPO, "refs/heads/test-ref")
 	blobContent := base64.RawStdEncoding.EncodeToString([]byte(`Test blob content`))
 	fmt.Println("Base64 encoded blobContent: ", blobContent)
 	encoding := "base64"
