@@ -39,9 +39,8 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 	prHeadRef := OWNER + ":" + headRef
 	prBaseRef := OWNER + ":" + baseRef
 	prListOpts := github.PullRequestListOptions{
-		State: "open",
-		Head:  prHeadRef,
-		Base:  prBaseRef,
+		Head: prHeadRef,
+		Base: prBaseRef,
 	}
 	prList, _, err := client.PullRequests.List(ctx, OWNER, REPO, &prListOpts)
 	if err != nil {
@@ -50,6 +49,8 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 			return
 		}
 	}
+
+	log.Println(prList)
 
 	if len(prList) != 0 {
 		log.Printf("Info: PR #%d corresponding to the specified base branch \"%s\" and head branch \"%s\" is still open. Exiting.\n", *prList[0].Number, baseRef, headRef)
