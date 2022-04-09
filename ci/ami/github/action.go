@@ -19,7 +19,11 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	// create a github api client and context using our action's auto-generated github token
 	client, ctx := GetGithubClientCtx(os.Getenv("GITHUB_TOKEN"))
 
-	baseRef, headRef := "refs/heads/"+os.Getenv("CAPA_ACTION_BASE_BRANCH"), "refs/heads/"+os.Getenv("CAPA_ACTION_HEAD_BRANCH")
+	// define references
+	baseRef := "refs/heads/" + os.Getenv("CAPA_ACTION_BASE_BRANCH")
+	headRef := "refs/heads/" + os.Getenv("CAPA_ACTION_HEAD_BRANCH")
+	prHeadRef := OWNER + ":" + headRef
+	prBaseRef := baseRef
 
 	// check if the required head branch already exists
 	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, headRef)
@@ -30,31 +34,33 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 		} else {
 			log.Fatal(err)
 		}
+	} else {
+		prListOpts := github.PullRequestListOptions{
+			Head: prHeadRef,
+			Base: prBaseRef,
+		}
+		prList, _, err := client.PullRequests.List(ctx, OWNER, REPO, &prListOpts)
+		if err != nil {
+			if len(prList) != 0 {
+				log.Fatal(err)
+			}
+		}
+
+		log.Println(prList)
+
+		if len(prList) == 0 {
+			_, err := client.Git.DeleteRef(ctx, OWNER, REPO, headRef)
+			checkError(err)
+			log.Printf("Info: Deleted existing head reference: %s", headRef)
+		} else {
+			log.Printf("Info: PR #%d corresponding to the specified base branch \"%s\" and head branch \"%s\" is still open. Exiting.\n", *prList[0].Number, baseRef, headRef)
+			return false
+		}
 	}
 
 	// get reference to the head branch
 	ref, _, err = client.Git.GetRef(ctx, OWNER, REPO, headRef)
 	checkError(err)
-
-	prHeadRef := OWNER + ":" + headRef
-	prBaseRef := baseRef
-	prListOpts := github.PullRequestListOptions{
-		Head: prHeadRef,
-		Base: prBaseRef,
-	}
-	prList, _, err := client.PullRequests.List(ctx, OWNER, REPO, &prListOpts)
-	if err != nil {
-		if len(prList) != 0 {
-			log.Fatal(err)
-		}
-	}
-
-	log.Println(prList)
-
-	if len(prList) != 0 {
-		log.Printf("Info: PR #%d corresponding to the specified base branch \"%s\" and head branch \"%s\" is still open. Exiting.\n", *prList[0].Number, baseRef, headRef)
-		return false
-	}
 
 	// get the commit pointed by the head branch
 	parentCommit, _, err := client.Git.GetCommit(ctx, OWNER, REPO, *ref.Object.SHA)
@@ -106,32 +112,13 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	ref, _, err = client.Git.GetRef(ctx, OWNER, REPO, headRef)
 	checkError(err)
 
-	commitType := "string"
+	refObjType := "commit"
 	ref.Object.SHA = commit.SHA
 	ref.Object.URL = commit.URL
-	ref.Object.Type = &commitType
+	ref.Object.Type = &refObjType
 
 	_, _, err = client.Git.UpdateRef(ctx, OWNER, REPO, ref, true)
 	checkError(err)
-
-	// prRepo := github.Repository{
-	// 	Fullname: OWNER_REPO,
-	// }
-	// prLabel := "ami-build-action"
-	// prBaseBranch := github.PullRequestBranch{
-	// 	Label: &prLabel,
-	// 	Ref:   &baseRef,
-	// 	Repo:  prRepo,
-	// }
-	// prHeadBranch := github.PullRequestBranch{
-	// 	Label: &prLabel,
-	// 	Ref:   &baseRef,
-	// 	Repo:  prRepo,
-	// }
-	// prAssignee := "zeborg"
-	// prAssigneeUser := github.User{
-	// 	Login: &prAssignee,
-	// }
 
 	// create pr to update the amibuildconfig
 	prTitle := fmt.Sprintf("[CAPA-Action] ⚓️ Updating `%s`", AMIBuildConfigFilename)
