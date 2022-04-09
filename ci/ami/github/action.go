@@ -82,7 +82,7 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 	checkError(err)
 
 	// update the head to point to our newly created commit
-	ref, _, err = client.Git.GetRef(ctx, OWNER, REPO, "refs/heads/test-ref")
+	ref, _, err = client.Git.GetRef(ctx, OWNER, REPO, headRef)
 	checkError(err)
 
 	commitType := "string"
