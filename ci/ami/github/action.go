@@ -37,7 +37,7 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 	checkError(err)
 
 	prHeadRef := OWNER + ":" + headRef
-	prBaseRef := OWNER + ":" + baseRef
+	prBaseRef := baseRef
 	prListOpts := github.PullRequestListOptions{
 		Head: prHeadRef,
 		Base: prBaseRef,
