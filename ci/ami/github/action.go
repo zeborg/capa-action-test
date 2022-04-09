@@ -42,7 +42,11 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 		if len(prList) == 0 {
 			_, err := client.Git.DeleteRef(ctx, OWNER, REPO, headRef)
 			checkError(err)
-			log.Printf("Info: Deleted existing head reference: %s", headRef)
+
+			_, err = CreateRef(client, ctx, baseRef, headRef)
+			checkError(err)
+
+			log.Printf("Info: Recreated existing head reference: %s", headRef)
 		} else {
 			log.Printf("Info: PR #%d corresponding to the specified base branch \"%s\" and head branch \"%s\" is still open. Exiting.\n", *prList[0].Number, baseRef, headRef)
 			return false
