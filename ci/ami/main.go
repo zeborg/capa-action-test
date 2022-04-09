@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/zeborg/capa-action-test/github"
-	"gotest.tools/assert/cmp"
 )
 
 func checkError(err error) {
