@@ -15,7 +15,7 @@ func checkError(err error) {
 	}
 }
 
-func Action(blobBytes []byte, AMIBuildConfigFilename string) {
+func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	// create a github api client and context using our action's auto-generated github token
 	client, ctx := GetGithubClientCtx(os.Getenv("GITHUB_TOKEN"))
 
@@ -46,7 +46,6 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 	if err != nil {
 		if len(prList) != 0 {
 			log.Fatal(err)
-			return
 		}
 	}
 
@@ -54,7 +53,7 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 
 	if len(prList) != 0 {
 		log.Printf("Info: PR #%d corresponding to the specified base branch \"%s\" and head branch \"%s\" is still open. Exiting.\n", *prList[0].Number, baseRef, headRef)
-		return
+		return false
 	}
 
 	// get the commit pointed by the head branch
@@ -150,4 +149,5 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 	checkError(err)
 
 	log.Println("PR created: ", prCreated)
+	return true
 }
