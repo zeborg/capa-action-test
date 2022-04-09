@@ -60,7 +60,7 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 		}
 	}
 
-	// get reference to the head branch
+	// get the reference to the head branch
 	ref, _, err = client.Git.GetRef(ctx, OWNER, REPO, headRef)
 	checkError(err)
 
