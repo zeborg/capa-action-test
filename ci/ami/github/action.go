@@ -27,14 +27,7 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 
 	// check if the required head branch already exists
 	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, headRef)
-	if err != nil {
-		if ref == nil {
-			_, err = CreateRef(client, ctx, baseRef, headRef)
-			checkError(err)
-		} else {
-			log.Fatal(err)
-		}
-	} else {
+	if err == nil {
 		prListOpts := github.PullRequestListOptions{
 			Head: prHeadRef,
 			Base: prBaseRef,
@@ -46,8 +39,6 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 			}
 		}
 
-		log.Println(prList)
-
 		if len(prList) == 0 {
 			_, err := client.Git.DeleteRef(ctx, OWNER, REPO, headRef)
 			checkError(err)
@@ -55,6 +46,13 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 		} else {
 			log.Printf("Info: PR #%d corresponding to the specified base branch \"%s\" and head branch \"%s\" is still open. Exiting.\n", *prList[0].Number, baseRef, headRef)
 			return false
+		}
+	} else {
+		if ref == nil {
+			_, err = CreateRef(client, ctx, baseRef, headRef)
+			checkError(err)
+		} else {
+			log.Fatal(err)
 		}
 	}
 
