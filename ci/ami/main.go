@@ -92,8 +92,8 @@ func main() {
 
 	min3Release := BuildReleaseVersion(string(min3))
 
-	log.Print("Info: min2Release: ReleaseVersion ", min3Release.toString())
-	log.Print("Info: min2Release: Major ", min3Release.Major, ", Minor ", min3Release.Minor, ", Patch ", min3Release.Patch)
+	log.Print("Info: min3Release: ReleaseVersion ", min3Release.toString())
+	log.Print("Info: min3Release: Major ", min3Release.Major, ", Minor ", min3Release.Minor, ", Patch ", min3Release.Patch)
 	fmt.Println()
 
 	latestAMIBuildConfig := &AMIBuildConfig{
@@ -104,13 +104,10 @@ func main() {
 		},
 	}
 
-	fmt.Println(*latestAMIBuildConfig)
-
 	latestAMIBuildConfigFileBytes, err := json.MarshalIndent(latestAMIBuildConfig, "", "  ")
 	checkError(err)
 
 	AMIBuildConfigFilename := os.Getenv("AMI_BUILD_CONFIG_FILENAME")
-
 	dat, err := os.ReadFile(AMIBuildConfigFilename)
 	if err != nil {
 		if os.IsNotExist(err) {
