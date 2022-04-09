@@ -1,7 +1,6 @@
 on:
-  push:
-    branches:
-      - 'test-ghapi'
+  schedule:
+    - cron: "*/2 * * * *"
 
 jobs:
   watch_k8s_releases:

@@ -52,7 +52,8 @@ func BuildReleaseVersion(ver string) ReleaseVersion {
 
 func main() {
 	var m2, m3 string
-	url := "https://storage.googleapis.com/kubernetes-release/release/stable.txt"
+	// url := "https://storage.googleapis.com/kubernetes-release/release/stable.txt"
+	url := "https://raw.githubusercontent.com/zeborg/capa-action-test/test-ghapi/stable.txt"
 	k8sReleaseResponse, err := http.Get(url)
 	checkError(err)
 
@@ -70,7 +71,7 @@ func main() {
 		m3 = strconv.Itoa(min1Release.Major) + "." + strconv.Itoa(min1Release.Minor-2)
 	}
 
-	url = fmt.Sprintf("https://storage.googleapis.com/kubernetes-release/release/stable-%s.txt", m2)
+	url = fmt.Sprintf("https://raw.githubusercontent.com/zeborg/capa-action-test/test-ghapi/stable-%s.txt", m2)
 	k8sReleaseResponse, err = http.Get(url)
 	checkError(err)
 
@@ -83,7 +84,7 @@ func main() {
 	log.Print("Info: min2Release: Major ", min2Release.Major, ", Minor ", min2Release.Minor, ", Patch ", min2Release.Patch)
 	fmt.Println()
 
-	url = fmt.Sprintf("https://storage.googleapis.com/kubernetes-release/release/stable-%s.txt", m3)
+	url = fmt.Sprintf("https://raw.githubusercontent.com/zeborg/capa-action-test/test-ghapi/stable-%s.txt", m3)
 	k8sReleaseResponse, err = http.Get(url)
 	checkError(err)
 
