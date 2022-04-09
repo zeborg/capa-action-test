@@ -20,6 +20,6 @@ jobs:
         go run main.go
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CAPA_ACTION_BASE_BRANCH: "test-ghapi"
+          CAPA_ACTION_BASE_BRANCH: "main"
           CAPA_ACTION_HEAD_BRANCH: "test-ref-1"
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
