@@ -128,7 +128,6 @@ func main() {
 	checkError(err)
 	if !cmp.Equal(currentAMIBuildConfig, latestAMIBuildConfig) {
 		github.Action(latestAMIBuildConfigFileBytes, AMIBuildConfigFilename)
-
 		log.Printf("Info: Updated \"%s\" with K8s versions from \"%s\" to \"%s\"", AMIBuildConfigFilename, currentAMIBuildConfig.K8sReleases, latestAMIBuildConfig.K8sReleases)
 	} else {
 		log.Printf("Info: \"%s\" is up-to-date.", AMIBuildConfigFilename)
