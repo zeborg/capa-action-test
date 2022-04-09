@@ -134,7 +134,7 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	// }
 
 	// create pr to update the amibuildconfig
-	prTitle := "[CAPA-Action] ⚓️ Updating `AMIBuildConfig.json`"
+	prTitle := fmt.Sprintf("[CAPA-Action] ⚓️ Updating `%s`", AMIBuildConfigFilename)
 	prBody := fmt.Sprintf("Updated config:\n```json\n%s\n```", string(blobBytes))
 	prModify := false
 	newPR := github.NewPullRequest{
@@ -148,6 +148,15 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	prCreated, _, err := client.PullRequests.Create(ctx, OWNER, REPO, &newPR)
 	checkError(err)
 
-	log.Println("PR created: ", prCreated)
+	reqReviewers := github.ReviewersRequest{
+		Reviewers: []string{"zeborg"},
+	}
+
+	_, _, err = client.PullRequests.RequestReviewers(ctx, OWNER, REPO, *prCreated.Number, reqReviewers)
+	checkError(err)
+
+	_, _, err = client.Issues.AddLabelsToIssue(ctx, OWNER, REPO, *prCreated.Number, []string{"ami-build-action"})
+	checkError(err)
+
 	return true
 }
