@@ -2,6 +2,7 @@ package github
 
 import (
 	"encoding/base64"
+	"fmt"
 	"log"
 	"os"
 
@@ -34,6 +35,26 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 	// get reference to the head branch
 	ref, _, err = client.Git.GetRef(ctx, OWNER, REPO, headRef)
 	checkError(err)
+
+	prHeadRef := OWNER + ":" + headRef
+	prBaseRef := OWNER + ":" + baseRef
+	prListOpts := github.PullRequestListOptions{
+		State: "open",
+		Head:  prHeadRef,
+		Base:  prBaseRef,
+	}
+	prList, _, err := client.PullRequests.List(ctx, OWNER, REPO, &prListOpts)
+	if err != nil {
+		if prList != nil {
+			log.Fatal(err)
+			return
+		}
+	}
+
+	if prList != nil {
+		log.Printf("Info: PR #%d corresponding to the specified base branch \"%s\" and head branch \"%s\" is still open. Exiting.\n", *prList[0].Number, baseRef, headRef)
+		return
+	}
 
 	// get the commit pointed by the head branch
 	parentCommit, _, err := client.Git.GetCommit(ctx, OWNER, REPO, *ref.Object.SHA)
@@ -92,4 +113,40 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) {
 
 	_, _, err = client.Git.UpdateRef(ctx, OWNER, REPO, ref, true)
 	checkError(err)
+
+	// prRepo := github.Repository{
+	// 	Fullname: OWNER_REPO,
+	// }
+	// prLabel := "ami-build-action"
+	// prBaseBranch := github.PullRequestBranch{
+	// 	Label: &prLabel,
+	// 	Ref:   &baseRef,
+	// 	Repo:  prRepo,
+	// }
+	// prHeadBranch := github.PullRequestBranch{
+	// 	Label: &prLabel,
+	// 	Ref:   &baseRef,
+	// 	Repo:  prRepo,
+	// }
+	// prAssignee := "zeborg"
+	// prAssigneeUser := github.User{
+	// 	Login: &prAssignee,
+	// }
+
+	// create pr to update the amibuildconfig
+	prTitle := "[CAPA-Action] ⚓️ Updating `AMIBuildConfig.json`"
+	prBody := fmt.Sprintf("Updated config:\n```json\n%s\n```", string(blobBytes))
+	prModify := false
+	newPR := github.NewPullRequest{
+		Title:               &prTitle,
+		Head:                &prHeadRef,
+		Base:                &prBaseRef,
+		Body:                &prBody,
+		MaintainerCanModify: &prModify,
+	}
+
+	prCreated, _, err := client.PullRequests.Create(ctx, OWNER, REPO, &newPR)
+	checkError(err)
+
+	log.Println("PR created: ", prCreated)
 }

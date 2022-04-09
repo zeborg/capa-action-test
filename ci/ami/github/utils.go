@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	OWNER = strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")[0]
-	REPO  = strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")[1]
+	OWNER_REPO = os.Getenv("GITHUB_REPOSITORY")
+	OWNER      = strings.Split(OWNER_REPO, "/")[0]
+	REPO       = strings.Split(OWNER_REPO, "/")[1]
 )
 
 func GetGithubClientCtx(token string) (*github.Client, context.Context) {
