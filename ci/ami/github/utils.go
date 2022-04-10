@@ -2,19 +2,10 @@ package github
 
 import (
 	"context"
-	"fmt"
-	"log"
-	"os"
-	"strings"
+	"encoding/base64"
 
 	"github.com/google/go-github/v42/github"
 	"golang.org/x/oauth2"
-)
-
-var (
-	OWNER_REPO = os.Getenv("GITHUB_REPOSITORY")
-	OWNER      = strings.Split(OWNER_REPO, "/")[0]
-	REPO       = strings.Split(OWNER_REPO, "/")[1]
 )
 
 func GetGithubClientCtx(token string) (*github.Client, context.Context) {
@@ -25,11 +16,6 @@ func GetGithubClientCtx(token string) (*github.Client, context.Context) {
 	tc := oauth2.NewClient(ctx, ts)
 
 	return github.NewClient(tc), ctx
-}
-
-func ListRepos(client *github.Client, ctx context.Context) ([]*github.Repository, error) {
-	repos, _, err := client.Repositories.List(ctx, os.Getenv("GITHUB_REPOSITORY_OWNER"), nil)
-	return repos, err
 }
 
 func CreateIssue(client *github.Client, ctx context.Context) (*github.Issue, error) {
@@ -56,23 +42,70 @@ func CreateIssue(client *github.Client, ctx context.Context) (*github.Issue, err
 	return issue, err
 }
 
-func CreateRef(client *github.Client, ctx context.Context, fromRef, toRef string) (*github.Reference, error) {
+func CreateRef(client *github.Client, ctx context.Context, fromRef, toRef string) *github.Reference {
 	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, fromRef)
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkError(err)
 
 	newRef := github.Reference{
 		Ref:    &toRef,
 		URL:    ref.URL,
 		Object: ref.Object,
 	}
-	if err == nil {
-		fmt.Println(ref)
-	} else {
-		log.Fatal(err)
-	}
-
 	refNew, _, err := client.Git.CreateRef(ctx, OWNER, REPO, &newRef)
-	return refNew, err
+	checkError(err)
+
+	return refNew
+}
+
+func CreateBlob(client *github.Client, ctx context.Context, encoding string, blobBytes []byte) (*github.Blob, error) {
+	blobContent := base64.RawStdEncoding.EncodeToString(blobBytes)
+	newBlob := github.Blob{
+		Content:  &blobContent,
+		Encoding: &encoding,
+	}
+	blob, _, err := client.Git.CreateBlob(
+		ctx,
+		OWNER,
+		REPO,
+		&newBlob,
+	)
+
+	return blob, err
+}
+
+func CreateTree(client *github.Client, ctx context.Context, filename string, mode string, baseSHA, blobSHA string) (*github.Tree, error) {
+	treePath := "ci/ami/" + filename
+	treeMode := "100644"
+	newTreeEntry := github.TreeEntry{
+		Path: &treePath,
+		Mode: &treeMode,
+		SHA:  &blobSHA,
+	}
+	newTree, _, err := client.Git.CreateTree(ctx, OWNER, REPO, baseSHA, []*github.TreeEntry{&newTreeEntry})
+
+	return newTree, err
+}
+
+func CreatePR(client *github.Client, ctx context.Context, prModify bool, prTitle, prHeadRef, prBaseRef, prBody string) (*github.PullRequest, error) {
+	newPR := github.NewPullRequest{
+		Title:               &prTitle,
+		Head:                &prHeadRef,
+		Base:                &prBaseRef,
+		Body:                &prBody,
+		MaintainerCanModify: &prModify,
+	}
+	prCreated, _, err := client.PullRequests.Create(ctx, OWNER, REPO, &newPR)
+
+	return prCreated, err
+}
+
+func UpdateRef(client *github.Client, ctx context.Context, ref *github.Reference, commit *github.Commit) (*github.Reference, error) {
+	refObjType := "commit"
+	ref.Object.SHA = commit.SHA
+	ref.Object.URL = commit.URL
+	ref.Object.Type = &refObjType
+
+	newRef, _, err := client.Git.UpdateRef(ctx, OWNER, REPO, ref, true)
+
+	return newRef, err
 }

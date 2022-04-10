@@ -60,10 +60,7 @@ func main() {
 	checkError(err)
 
 	min1Release := BuildReleaseVersion(string(min1))
-
-	log.Print("Info: min1Release: ReleaseVersion ", min1Release.toString())
 	log.Print("Info: min1Release: Major ", min1Release.Major, ", Minor ", min1Release.Minor, ", Patch ", min1Release.Patch)
-	fmt.Println()
 
 	if min1Release.Minor >= 2 {
 		m2 = strconv.Itoa(min1Release.Major) + "." + strconv.Itoa(min1Release.Minor-1)
@@ -78,10 +75,7 @@ func main() {
 	checkError(err)
 
 	min2Release := BuildReleaseVersion(string(min2))
-
-	log.Print("Info: min2Release: ReleaseVersion ", min2Release.toString())
 	log.Print("Info: min2Release: Major ", min2Release.Major, ", Minor ", min2Release.Minor, ", Patch ", min2Release.Patch)
-	fmt.Println()
 
 	url = fmt.Sprintf("https://raw.githubusercontent.com/zeborg/capa-action-test/main/stable-%s.txt", m3)
 	k8sReleaseResponse, err = http.Get(url)
@@ -91,10 +85,7 @@ func main() {
 	checkError(err)
 
 	min3Release := BuildReleaseVersion(string(min3))
-
-	log.Print("Info: min3Release: ReleaseVersion ", min3Release.toString())
 	log.Print("Info: min3Release: Major ", min3Release.Major, ", Minor ", min3Release.Minor, ", Patch ", min3Release.Patch)
-	fmt.Println()
 
 	latestAMIBuildConfig := &AMIBuildConfig{
 		K8sReleases: map[string]string{
