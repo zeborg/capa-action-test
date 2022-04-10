@@ -109,3 +109,22 @@ func UpdateRef(client *github.Client, ctx context.Context, ref *github.Reference
 
 	return newRef, err
 }
+
+func RequestReviewers(client *github.Client, ctx context.Context, prNum int) (*github.PullRequest, error) {
+	reviewers := []string{}
+	collabs, _, err := client.Repositories.ListCollaborators(ctx, OWNER, REPO, nil)
+	checkError(err)
+
+	for _, u := range collabs {
+		if u.Permissions["maintain"] {
+			reviewers = append(reviewers, *u.Login)
+		}
+	}
+	reqReviewers := github.ReviewersRequest{
+		Reviewers: reviewers,
+	}
+
+	pr, _, err := client.PullRequests.RequestReviewers(ctx, OWNER, REPO, prNum, reqReviewers)
+
+	return pr, err
+}

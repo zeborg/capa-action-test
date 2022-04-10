@@ -103,17 +103,7 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	checkError(err)
 
 	// request reviewers for the newly created pr
-	reviewers := []string{}
-	collabs, _, err := client.Repositories.ListCollaborators(ctx, OWNER, REPO, nil)
-	checkError(err)
-
-	for _, u := range collabs {
-		reviewers = append(reviewers, *u.Login)
-	}
-	reqReviewers := github.ReviewersRequest{
-		Reviewers: reviewers,
-	}
-	_, _, err = client.PullRequests.RequestReviewers(ctx, OWNER, REPO, *prCreated.Number, reqReviewers)
+	_, err = RequestReviewers(client, ctx, *prCreated.Number)
 	checkError(err)
 
 	// add labels to the pr
