@@ -70,7 +70,7 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	parentCommit, _, err := client.Git.GetCommit(ctx, OWNER, REPO, *ref.Object.SHA)
 	checkError(err)
 
-	// upload the base64 encoded blob for updated ami config to github server
+	// upload the base64 encoded blob for updated amibuildconfig to github server
 	blob, err := CreateBlob(client, ctx, "base64", blobBytes)
 	checkError(err)
 
@@ -102,13 +102,17 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	prCreated, err := CreatePR(client, ctx, false, prTitle, prHeadRef, prBaseRef, prBody)
 	checkError(err)
 
+	// add labels to the newly created pr
+	labels := []string{"ami-build-action"}
+	_, _, err = client.Issues.AddLabelsToIssue(ctx, OWNER, REPO, *prCreated.Number, labels)
+	checkError(err)
+
 	// request reviewers for the newly created pr
 	_, err = RequestReviewers(client, ctx, *prCreated.Number)
 	checkError(err)
 
-	// add labels to the pr
-	labels := []string{"ami-build-action"}
-	_, _, err = client.Issues.AddLabelsToIssue(ctx, OWNER, REPO, *prCreated.Number, labels)
+	// add assignees to the newly created pr
+	_, _, err = client.Issues.AddAssignees(ctx, OWNER, REPO, *prCreated.Number, strings.Split(os.Getenv("CAPA_ACTION_PR_ASSIGNEES"), ","))
 	checkError(err)
 
 	return true
