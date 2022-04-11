@@ -36,7 +36,6 @@ func (r *ReleaseVersion) toString() string {
 
 func BuildReleaseVersion(ver string) ReleaseVersion {
 	verSplit := strings.Split(ver, ".")
-	log.Println(verSplit)
 	major, err := strconv.Atoi(strings.ReplaceAll(verSplit[0], "v", ""))
 	checkError(err)
 	minor, err := strconv.Atoi(verSplit[1])
