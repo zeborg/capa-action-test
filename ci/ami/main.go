@@ -51,6 +51,7 @@ func BuildReleaseVersion(ver string) ReleaseVersion {
 }
 
 func main() {
+	// triggering action
 	var m2, m3 string
 	url := "https://raw.githubusercontent.com/zeborg/capa-action-test/main/stable.txt"
 	k8sReleaseResponse, err := http.Get(url)
