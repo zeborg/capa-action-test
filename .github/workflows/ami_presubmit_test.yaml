@@ -17,7 +17,6 @@ jobs:
 
     - name: Test Presubmit Job
       run: |
-        git clone https://github.com/kubernetes-sigs/image-builder.git ci/ami/image-builder
         curl -L https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v1.4.1/clusterawsadm-linux-amd64 -o clusterawsadm
         cd ci/ami
         go run main.go -mode presubmit
