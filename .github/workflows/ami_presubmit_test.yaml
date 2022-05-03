@@ -1,10 +1,10 @@
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  watch_k8s_releases:
+  presubmit:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -15,16 +15,14 @@ jobs:
       with:
         go-version: 1.17
 
-    - name: Test GitHub API
+    - name: Test Presubmit Job
       run: |
+        git clone https://github.com/kubernetes-sigs/image-builder.git ci/ami/image-builder
+        curl -L https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v1.4.1/clusterawsadm-linux-amd64 -o clusterawsadm
         cd ci/ami
-        go run main.go
+        go run main.go -mode presubmit
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CAPA_ACTION_BASE_BRANCH: "main"
-          CAPA_ACTION_HEAD_BRANCH: "test-ref-2"
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
-          CAPA_ACTION_PR_REVIEWERS: "zeborg,zebhinav"
-          CAPA_ACTION_PR_ASSIGNEES: "zeborg,zebhinav"
-          CAPA_ACTION_DEFAULTS: "Defaults.json"
-          CAPA_ACTION_TEMPLATE: "Template.json"
+          AWS_ID: ${{ secrets.AWS_ID }}
+          AWS_SECRET: ${{ secrets.AWS_SECRET }}

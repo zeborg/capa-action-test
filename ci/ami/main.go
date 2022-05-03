@@ -1,18 +1,31 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/zeborg/capa-action-test/github"
 )
+
+func Shell(command string) (error, string, string) {
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd := exec.Command("bash", "-c", command)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	return err, stdout.String(), stderr.String()
+}
 
 func checkError(err error) {
 	if err != nil {
@@ -51,7 +64,24 @@ func BuildReleaseVersion(ver string) ReleaseVersion {
 }
 
 func main() {
-	// triggering action
+	mode := flag.String("mode", "", "Acceptable values: 'github' (for CAPA GitHub Action) and 'prow' (for CAPA Prow Jobs)")
+	flag.Parse()
+
+	if *mode == "github" {
+		gh()
+	} else if *mode == "presubmit" {
+		presubmit()
+	} else if *mode == "postsubmit" {
+		postsubmit()
+	} else if *mode == "" {
+		log.Fatal("Error: Value not provided for 'mode' flag\n")
+	} else {
+		log.Fatalf("Error: Invalid value '%s' found for 'mode' flag\n", *mode)
+	}
+}
+
+func gh() {
+	log.Println("gh()")
 	var m2, m3 string
 	url := "https://raw.githubusercontent.com/zeborg/capa-action-test/main/stable.txt"
 	k8sReleaseResponse, err := http.Get(url)
@@ -122,4 +152,38 @@ func main() {
 	} else {
 		log.Printf("Info: \"%s\" is up-to-date.", AMIBuildConfigFilename)
 	}
+}
+
+func presubmit() {
+	AMIBuildConfigFilename := os.Getenv("AMI_BUILD_CONFIG_FILENAME")
+	dat, err := os.ReadFile(AMIBuildConfigFilename)
+	checkError(err)
+
+	currentAMIBuildConfig := new(AMIBuildConfig)
+	err = json.Unmarshal(dat, currentAMIBuildConfig)
+	checkError(err)
+
+	for _, v := range currentAMIBuildConfig.K8sReleases {
+		err, out, _ := Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s", strings.ReplaceAll(v, "v", "")))
+		checkError(err)
+
+		if out == "" {
+			log.Printf("Info: Building AMI for Kubernetes %s.", v)
+			err, out, errout := Shell("sh ./image-builder.sh")
+			checkError(err)
+
+			if errout != "" {
+				log.Fatalf("Error: %s", errout)
+			} else {
+				log.Println("Info: image-builder log")
+				log.Println(out)
+			}
+		} else {
+			log.Printf("Info: AMI for Kubernetes %s already exists. Skipping image building.", v)
+		}
+	}
+}
+
+func postsubmit() {
+	log.Println("postsubmit()")
 }
