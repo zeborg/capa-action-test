@@ -18,11 +18,10 @@ jobs:
 
     - name: Test Presubmit Job
       run: |
-        git clone https://github.com/kubernetes-sigs/image-builder.git
-        sed 's/capa-ami-/test-capa-ami-/' ./image-builder/images/capi/packer/ami/packer.json
-        cd image-builder/images/capi
-        make deps-ami
-        make build-ami-ubuntu-2004
+        git clone https://github.com/kubernetes-sigs/image-builder.git ci/ami/image-builder
+        curl https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v1.4.1/clusterawsadm-linux-amd64 -o clusterawsadm
+        cd ci/ami
+        go run main.go -mode presubmit
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
