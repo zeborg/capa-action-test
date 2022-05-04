@@ -195,15 +195,6 @@ func presubmit() {
 				flagsK8s += fmt.Sprintf("-var=%s=%s ", k, v)
 			}
 
-			err, out, errout := Shell("sh ./image-builder-deps.sh")
-			checkError(err)
-			if errout != "" {
-				log.Fatalf("Error: %s", errout)
-			} else {
-				log.Println("Info: Setting up image-builder")
-				log.Println(out)
-			}
-
 			for _, os := range []string{"amazon-2", "centos-7", "flatcar-stable", "ubuntu-18.04", "ubuntu-20.04"} {
 				switch os {
 				case "amazon-2":
