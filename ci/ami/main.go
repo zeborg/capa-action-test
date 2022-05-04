@@ -204,7 +204,7 @@ func presubmit() {
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
-					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					err, out, errout := Shell(fmt.Sprintf("make build-ami-%s", os))
 					checkError(err)
 					if errout != "" {
 						log.Fatalf("Error: %s", errout)
