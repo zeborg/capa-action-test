@@ -198,11 +198,12 @@ func presubmit() {
 			for _, os := range []string{"amazon-2", "centos-7", "flatcar-stable", "ubuntu-18.04", "ubuntu-20.04"} {
 				switch os {
 				case "amazon-2":
-					flags := ""
+					flags := flagsK8s
 					for k, v := range defaultAMIBuildConfig.Amazon2 {
 						flags += fmt.Sprintf("-var=%s=%s ", k, v)
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
+					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					checkError(err)
 					if errout != "" {
@@ -211,11 +212,12 @@ func presubmit() {
 						log.Println(out)
 					}
 				case "centos-7":
-					flags := ""
+					flags := flagsK8s
 					for k, v := range defaultAMIBuildConfig.Centos7 {
 						flags += fmt.Sprintf("-var=%s=%s ", k, v)
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
+					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					checkError(err)
 					if errout != "" {
@@ -224,11 +226,12 @@ func presubmit() {
 						log.Println(out)
 					}
 				case "flatcar":
-					flags := ""
+					flags := flagsK8s
 					for k, v := range defaultAMIBuildConfig.Flatcar {
 						flags += fmt.Sprintf("-var=%s=%s ", k, v)
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
+					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					checkError(err)
 					if errout != "" {
@@ -237,11 +240,12 @@ func presubmit() {
 						log.Println(out)
 					}
 				case "ubuntu-1804":
-					flags := ""
+					flags := flagsK8s
 					for k, v := range defaultAMIBuildConfig.Ubuntu1804 {
 						flags += fmt.Sprintf("-var=%s=%s ", k, v)
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
+					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					checkError(err)
 					if errout != "" {
@@ -250,11 +254,12 @@ func presubmit() {
 						log.Println(out)
 					}
 				case "ubuntu-2004":
-					flags := ""
+					flags := flagsK8s
 					for k, v := range defaultAMIBuildConfig.Ubuntu2004 {
 						flags += fmt.Sprintf("-var=%s=%s ", k, v)
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
+					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					checkError(err)
 					if errout != "" {
