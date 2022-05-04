@@ -188,14 +188,14 @@ func presubmit() {
 			kubernetes_semver := v
 			kubernetes_rpm_version := strings.TrimPrefix(v, "v") + "-0"
 			kubernetes_deb_version := strings.TrimPrefix(v, "v") + "-00"
-			kubernetes_series := strings.Split(v, ".")[0] + strings.Split(v, ".")[1]
+			kubernetes_series := strings.Split(v, ".")[0] + "." + strings.Split(v, ".")[1]
 
 			flagsK8s := fmt.Sprintf("-var=kubernetes_series=%s -var=kubernetes_semver=%s -var=kubernetes_rpm_version=%s -var=kubernetes_deb_version=%s ", kubernetes_series, kubernetes_semver, kubernetes_rpm_version, kubernetes_deb_version)
 			for k, v := range defaultAMIBuildConfig.Default {
 				flagsK8s += fmt.Sprintf("-var=%s=%s ", k, v)
 			}
 
-			for _, os := range []string{"amazon-2", "centos-7", "flatcar-stable", "ubuntu-18.04", "ubuntu-20.04"} {
+			for _, os := range []string{"amazon-2", "centos-7", "flatcar", "ubuntu-1804", "ubuntu-2004"} {
 				switch os {
 				case "amazon-2":
 					flags := flagsK8s
@@ -204,7 +204,7 @@ func presubmit() {
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
-					err, out, errout := Shell(fmt.Sprintf("make build-ami-%s", os))
+					err, out, errout := Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s && cd ../../..", flags, os))
 					checkError(err)
 					if errout != "" {
 						log.Fatalf("Error: %s", errout)
@@ -218,7 +218,7 @@ func presubmit() {
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
-					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					err, out, errout := Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s && cd ../../..", flags, os))
 					checkError(err)
 					if errout != "" {
 						log.Fatalf("Error: %s", errout)
@@ -232,7 +232,7 @@ func presubmit() {
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
-					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					err, out, errout := Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s && cd ../../..", flags, os))
 					checkError(err)
 					if errout != "" {
 						log.Fatalf("Error: %s", errout)
@@ -246,7 +246,7 @@ func presubmit() {
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
-					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					err, out, errout := Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s && cd ../../..", flags, os))
 					checkError(err)
 					if errout != "" {
 						log.Fatalf("Error: %s", errout)
@@ -260,7 +260,7 @@ func presubmit() {
 					}
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
-					err, out, errout := Shell(fmt.Sprintf("PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					err, out, errout := Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s && cd ../../..", flags, os))
 					checkError(err)
 					if errout != "" {
 						log.Fatalf("Error: %s", errout)
