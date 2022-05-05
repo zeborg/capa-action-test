@@ -180,17 +180,18 @@ func presubmit() {
 	checkError(err)
 
 	for _, v := range currentAMIBuildConfig.K8sReleases {
-		err, out, _ := Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s", strings.TrimPrefix(v, "v")))
+		err, out, _ := Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s --owner-id %s", strings.TrimPrefix(v, "v"), os.Getenv("AWS_AMI_OWNER_ID")))
 		checkError(err)
 
 		if out == "" {
 			log.Printf("Info: Building AMI for Kubernetes %s.", v)
+			ami_regions := "us-east-1"
 			kubernetes_semver := v
 			kubernetes_rpm_version := strings.TrimPrefix(v, "v") + "-0"
 			kubernetes_deb_version := strings.TrimPrefix(v, "v") + "-00"
 			kubernetes_series := strings.Split(v, ".")[0] + "." + strings.Split(v, ".")[1]
 
-			flagsK8s := fmt.Sprintf("-var=kubernetes_series=%s -var=kubernetes_semver=%s -var=kubernetes_rpm_version=%s -var=kubernetes_deb_version=%s ", kubernetes_series, kubernetes_semver, kubernetes_rpm_version, kubernetes_deb_version)
+			flagsK8s := fmt.Sprintf("-var=ami_regions=%s -var=kubernetes_series=%s -var=kubernetes_semver=%s -var=kubernetes_rpm_version=%s -var=kubernetes_deb_version=%s ", ami_regions, kubernetes_series, kubernetes_semver, kubernetes_rpm_version, kubernetes_deb_version)
 			for k, v := range defaultAMIBuildConfig.Default {
 				flagsK8s += fmt.Sprintf("-var=%s=%s ", k, v)
 			}

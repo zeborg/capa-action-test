@@ -20,6 +20,7 @@ jobs:
       run: |
         cd ci/ami
         git clone https://github.com/kubernetes-sigs/image-builder.git
+        sed -i 's/capa-ami-/test-capa-ami-/' ./image-builder/images/capi/packer/ami/packer.json
         cd image-builder/images/capi
         make deps-ami
         cd ../../..
@@ -32,3 +33,4 @@ jobs:
           AMI_BUILD_CONFIG_DEFAULTS: "AMIBuildConfigDefaults.json"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_AMI_OWNER_ID: "570412231501"
