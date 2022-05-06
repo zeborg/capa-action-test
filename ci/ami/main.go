@@ -180,10 +180,12 @@ func presubmit() {
 	checkError(err)
 
 	for _, v := range currentAMIBuildConfig.K8sReleases {
-		err, out, _ := Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s", strings.TrimPrefix(v, "v")))
+		err, out, errout := Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s", strings.TrimPrefix(v, "v")))
 		checkError(err)
 
-		if out == "" {
+		if errout != "" {
+			log.Fatalf("Error: %s", errout)
+		} else if out == "" {
 			log.Printf("Info: Building AMI for Kubernetes %s.", v)
 			ami_regions := "us-east-1"
 			kubernetes_semver := v
