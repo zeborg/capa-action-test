@@ -183,6 +183,9 @@ func presubmit() {
 		err, out, errout := Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s", strings.TrimPrefix(v, "v")))
 		checkError(err)
 
+		log.Printf("DEBUGGING: out: %s", out)
+		log.Printf("DEBUGGING: errout: %s", errout)
+
 		if errout != "" {
 			log.Fatalf("Error: %s", errout)
 		} else if out == "" {
