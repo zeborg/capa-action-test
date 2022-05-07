@@ -34,6 +34,7 @@ jobs:
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
           AMI_BUILD_CONFIG_DEFAULTS: "AMIBuildConfigDefaults.json"
           AMI_BUILD_SUPPORTED_OS: "amazon-2"
+          AMI_BUILD_REGIONS: "us-east-1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_AMI_OWNER_ID: "570412231501"

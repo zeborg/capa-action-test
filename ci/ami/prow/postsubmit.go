@@ -34,12 +34,13 @@ func Postsubmit() {
 			log.Fatalf("Error: %s", stderr)
 		} else if stdout == "" {
 			log.Printf("Info: Building AMI for Kubernetes %s.", v)
+			ami_regions := os.Getenv("AMI_BUILD_REGIONS")
 			kubernetes_semver := v
 			kubernetes_rpm_version := strings.TrimPrefix(v, "v") + "-0"
 			kubernetes_deb_version := strings.TrimPrefix(v, "v") + "-00"
 			kubernetes_series := strings.Split(v, ".")[0] + "." + strings.Split(v, ".")[1]
 
-			flagsK8s := fmt.Sprintf("-var=kubernetes_series=%s -var=kubernetes_semver=%s -var=kubernetes_rpm_version=%s -var=kubernetes_deb_version=%s ", kubernetes_series, kubernetes_semver, kubernetes_rpm_version, kubernetes_deb_version)
+			flagsK8s := fmt.Sprintf("-var=ami_regions=%s -var=kubernetes_series=%s -var=kubernetes_semver=%s -var=kubernetes_rpm_version=%s -var=kubernetes_deb_version=%s ", ami_regions, kubernetes_series, kubernetes_semver, kubernetes_rpm_version, kubernetes_deb_version)
 			for k, v := range defaultAMIBuildConfig.Default {
 				flagsK8s += fmt.Sprintf("-var=%s=%s ", k, v)
 			}
@@ -101,8 +102,10 @@ func Postsubmit() {
 					for k, v := range defaultAMIBuildConfig.Ubuntu1804 {
 						flags += fmt.Sprintf("-var=%s=%s ", k, v)
 					}
+
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
+
 					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s && cd ../../..", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {

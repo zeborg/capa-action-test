@@ -34,7 +34,7 @@ func Presubmit() {
 			log.Fatalf("Error: %s", stderr)
 		} else if stdout == "" {
 			log.Printf("Info: Building AMI for Kubernetes %s.", v)
-			ami_regions := "us-east-1"
+			ami_regions := os.Getenv("AMI_BUILD_REGIONS")
 			kubernetes_semver := v
 			kubernetes_rpm_version := strings.TrimPrefix(v, "v") + "-0"
 			kubernetes_deb_version := strings.TrimPrefix(v, "v") + "-00"
