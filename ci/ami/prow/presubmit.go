@@ -15,19 +15,24 @@ func Presubmit() {
 	AMIBuildConfigDefaultsFilename := os.Getenv("AMI_BUILD_CONFIG_DEFAULTS")
 
 	dat, err := os.ReadFile(AMIBuildConfigFilename)
+	log.Println("Debugging: Presubmit: L18")
 	custom.CheckError(err)
 	currentAMIBuildConfig := new(custom.AMIBuildConfig)
 	err = json.Unmarshal(dat, currentAMIBuildConfig)
+	log.Println("Debugging: Presubmit: L22")
 	custom.CheckError(err)
 
 	dat, err = os.ReadFile(AMIBuildConfigDefaultsFilename)
+	log.Println("Debugging: Presubmit: L26")
 	custom.CheckError(err)
 	defaultAMIBuildConfig := new(custom.AMIBuildConfigDefaults)
 	err = json.Unmarshal(dat, defaultAMIBuildConfig)
+	log.Println("Debugging: Presubmit: L30")
 	custom.CheckError(err)
 
 	for _, v := range currentAMIBuildConfig.K8sReleases {
 		stderr, stdout, err := custom.Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s --owner-id %s", strings.TrimPrefix(v, "v"), os.Getenv("AWS_AMI_OWNER_ID")))
+		log.Println("Debugging: Presubmit: L35")
 		custom.CheckError(err)
 
 		if stderr != "" {
