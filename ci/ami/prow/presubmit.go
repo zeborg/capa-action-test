@@ -63,9 +63,12 @@ func Presubmit() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s && cd ../../..", flags, os))
+					_, _, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					log.Println("Debugging: Presubmit: L68")
+					stderr, stdout, err := custom.Shell("cd ../../..")
+					custom.CheckError(err)
+					log.Println("Debugging: Presubmit: L71")
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
 					} else {
