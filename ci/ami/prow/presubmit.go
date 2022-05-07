@@ -27,7 +27,7 @@ func Presubmit() {
 	custom.CheckError(err)
 
 	for _, v := range currentAMIBuildConfig.K8sReleases {
-		stderr, stdout, err := custom.Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s", strings.TrimPrefix(v, "v")))
+		stderr, stdout, err := custom.Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s --owner-id %s", strings.TrimPrefix(v, "v"), os.Getenv("AWS_AMI_OWNER_ID")))
 		custom.CheckError(err)
 
 		if stderr != "" {
