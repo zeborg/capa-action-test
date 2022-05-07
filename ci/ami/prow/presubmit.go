@@ -14,6 +14,9 @@ func Presubmit() {
 	AMIBuildConfigFilename := os.Getenv("AMI_BUILD_CONFIG_FILENAME")
 	AMIBuildConfigDefaultsFilename := os.Getenv("AMI_BUILD_CONFIG_DEFAULTS")
 
+	ami_regions := os.Getenv("AMI_BUILD_REGIONS")
+	supportedOS := strings.Split(os.Getenv("AMI_BUILD_SUPPORTED_OS"), ",")
+
 	dat, err := os.ReadFile(AMIBuildConfigFilename)
 	log.Println("Debugging: Presubmit: L18")
 	custom.CheckError(err)
@@ -39,7 +42,6 @@ func Presubmit() {
 			log.Fatalf("Error: %s", stderr)
 		} else if stdout == "" {
 			log.Printf("Info: Building AMI for Kubernetes %s.", v)
-			ami_regions := os.Getenv("AMI_BUILD_REGIONS")
 			kubernetes_semver := v
 			kubernetes_rpm_version := strings.TrimPrefix(v, "v") + "-0"
 			kubernetes_deb_version := strings.TrimPrefix(v, "v") + "-00"
@@ -49,8 +51,6 @@ func Presubmit() {
 			for k, v := range defaultAMIBuildConfig.Default {
 				flagsK8s += fmt.Sprintf("-var=%s=%s ", k, v)
 			}
-
-			supportedOS := strings.Split(os.Getenv("AMI_BUILD_SUPPORTED_OS"), ",")
 
 			for _, os := range supportedOS {
 				switch os {
@@ -65,6 +65,7 @@ func Presubmit() {
 
 					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s && cd ../../..", flags, os))
 					custom.CheckError(err)
+					log.Println("Debugging: Presubmit: L68")
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
 					} else {
