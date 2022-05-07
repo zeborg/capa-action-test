@@ -22,13 +22,12 @@ jobs:
       run: |
         cd ci/ami
         git clone https://github.com/kubernetes-sigs/image-builder.git
-        sed -i 's/capa-ami-/test-capa-ami-/' ./image-builder/images/capi/packer/ami/packer.json
         cd image-builder/images/capi
         make deps-ami
         cd ../../..
         curl -L https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v1.4.1/clusterawsadm-linux-amd64 -o clusterawsadm
         chmod +x clusterawsadm
-        go run main.go -mode presubmit
+        go run main.go -mode postsubmit
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"

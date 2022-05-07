@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/google/go-github/v42/github"
+	"github.com/zeborg/capa-action-test/custom"
 	"golang.org/x/oauth2"
 )
 
@@ -46,7 +47,7 @@ func CreateIssue(client *github.Client, ctx context.Context) (*github.Issue, err
 
 func CreateRef(client *github.Client, ctx context.Context, fromRef, toRef string) *github.Reference {
 	ref, _, err := client.Git.GetRef(ctx, OWNER, REPO, fromRef)
-	checkError(err)
+	custom.CheckError(err)
 
 	newRef := github.Reference{
 		Ref:    &toRef,
@@ -54,7 +55,7 @@ func CreateRef(client *github.Client, ctx context.Context, fromRef, toRef string
 		Object: ref.Object,
 	}
 	refNew, _, err := client.Git.CreateRef(ctx, OWNER, REPO, &newRef)
-	checkError(err)
+	custom.CheckError(err)
 
 	return refNew
 }

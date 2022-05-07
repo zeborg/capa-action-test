@@ -2,6 +2,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'ci/ami/AMIBuildConfig.js'
 
 jobs:
   watch_k8s_releases:
@@ -28,3 +30,4 @@ jobs:
           CAPA_ACTION_PR_ASSIGNEES: "zeborg,zebhinav"
           CAPA_ACTION_DEFAULTS: "Defaults.json"
           CAPA_ACTION_TEMPLATE: "Template.json"
+          
