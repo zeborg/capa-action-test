@@ -20,8 +20,8 @@ jobs:
       run: |
         cd ci/ami
         git clone https://github.com/kubernetes-sigs/image-builder.git
-        sed -i 's/capa-ami-/test-capa-ami-/' ./image-builder/images/capi/packer/ami/packer.json
         cd image-builder/images/capi
+        sed -i 's/capa-ami-/test-capa-ami-/' ./packer/ami/packer.json
         make deps-ami
         cd ../../..
         git clone -b nil-ami-return https://github.com/zeborg/cluster-api-provider-aws.git capa

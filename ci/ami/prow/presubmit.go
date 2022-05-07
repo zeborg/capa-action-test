@@ -62,7 +62,7 @@ func Presubmit() {
 					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
-						log.Fatalf("Error: %s", stderr)
+						log.Printf("Error: %s", stderr)
 					} else {
 						log.Println(stdout)
 					}
