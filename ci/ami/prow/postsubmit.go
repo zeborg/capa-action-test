@@ -32,6 +32,7 @@ func Postsubmit() {
 	for _, v := range currentAMIBuildConfig.K8sReleases {
 		stderr, stdout, err := custom.Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s --owner-id %s", strings.TrimPrefix(v, "v"), os.Getenv("AWS_AMI_OWNER_ID")))
 		custom.CheckError(err)
+		log.Println("Debugging: L35")
 
 		if stderr != "" {
 			log.Fatalf("Error: %s", stderr)
@@ -58,13 +59,14 @@ func Postsubmit() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
 					} else {
 						log.Println(stdout)
 					}
+					log.Println("Debugging: L69")
 				case "centos-7":
 					flags := flagsK8s
 					for k, v := range defaultAMIBuildConfig.Centos7 {
@@ -74,7 +76,7 @@ func Postsubmit() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
@@ -90,7 +92,7 @@ func Postsubmit() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
@@ -106,7 +108,7 @@ func Postsubmit() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
@@ -122,7 +124,7 @@ func Postsubmit() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
@@ -133,6 +135,7 @@ func Postsubmit() {
 					log.Println(fmt.Sprintf("Warning: Invalid OS %s. Skipping image building.", os))
 				}
 			}
+			log.Println("Debugging: L138")
 		} else {
 			log.Printf("Info: AMI for Kubernetes %s already exists. Skipping image building.", v)
 		}
