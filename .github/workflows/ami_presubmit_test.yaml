@@ -2,8 +2,6 @@ on:
   pull_request:
     branches:
       - 'main'
-    paths:
-      - 'ci/ami/AMIBuildConfig.js'
 
 jobs:
   presubmit:

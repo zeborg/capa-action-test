@@ -4,8 +4,6 @@ on:
       - 'closed'
     branches:
       - 'main'
-    paths:
-      - 'ci/ami/AMIBuildConfig.js'
 
 jobs:
   postsubmit:
