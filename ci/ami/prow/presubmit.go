@@ -18,24 +18,19 @@ func Presubmit() {
 	supportedOS := strings.Split(os.Getenv("AMI_BUILD_SUPPORTED_OS"), ",")
 
 	dat, err := os.ReadFile(AMIBuildConfigFilename)
-	log.Println("Debugging: Presubmit: L18")
 	custom.CheckError(err)
 	currentAMIBuildConfig := new(custom.AMIBuildConfig)
 	err = json.Unmarshal(dat, currentAMIBuildConfig)
-	log.Println("Debugging: Presubmit: L22")
 	custom.CheckError(err)
 
 	dat, err = os.ReadFile(AMIBuildConfigDefaultsFilename)
-	log.Println("Debugging: Presubmit: L26")
 	custom.CheckError(err)
 	defaultAMIBuildConfig := new(custom.AMIBuildConfigDefaults)
 	err = json.Unmarshal(dat, defaultAMIBuildConfig)
-	log.Println("Debugging: Presubmit: L30")
 	custom.CheckError(err)
 
 	for _, v := range currentAMIBuildConfig.K8sReleases {
 		stderr, stdout, err := custom.Shell(fmt.Sprintf("./clusterawsadm ami list --kubernetes-version %s --owner-id %s", strings.TrimPrefix(v, "v"), os.Getenv("AWS_AMI_OWNER_ID")))
-		log.Println("Debugging: Presubmit: L35")
 		custom.CheckError(err)
 
 		if stderr != "" {
@@ -63,12 +58,8 @@ func Presubmit() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					_, _, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err := custom.Shell(fmt.Sprintf("sh image-builder.sh %s %s", os, flags))
 					custom.CheckError(err)
-					log.Println("Debugging: Presubmit: L68")
-					stderr, stdout, err := custom.Shell("cd ../../..")
-					custom.CheckError(err)
-					log.Println("Debugging: Presubmit: L71")
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
 					} else {
