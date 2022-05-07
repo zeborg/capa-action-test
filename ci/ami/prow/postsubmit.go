@@ -58,7 +58,11 @@ func Postsubmit() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err := custom.Shell(fmt.Sprintf("sh image-builder.sh %s %s", os, flags))
+					// stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					_, _, err := custom.Shell("cd image-builder/images/capi")
+					custom.CheckError(err)
+
+					stderr, stdout, err := custom.Shell("ls")
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
