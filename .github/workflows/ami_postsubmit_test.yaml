@@ -2,8 +2,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - './ci/ami/AMIBuildConfig.js'
+    paths-ignore:
+      - '**'
+      - '!ci/ami/AMIBuildConfig.js'
 
 jobs:
   presubmit:
