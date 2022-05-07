@@ -5,5 +5,5 @@ shift
 FLAGS="$@"
 
 cd image-builder/images/capi
-PACKER_FLAGS="$flags" make build-ami-$os
+PACKER_FLAGS="$FLAGS" make build-ami-$OS
 cd ../../..
