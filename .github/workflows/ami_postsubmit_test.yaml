@@ -1,13 +1,15 @@
 on:
-  push:
+  pull_request:
+    types:
+      - 'closed'
     branches:
-      - main
-    paths-ignore:
-      - '**'
-      - '!ci/ami/AMIBuildConfig.js'
+      - 'main'
+    paths:
+      - 'ci/ami/AMIBuildConfig.js'
 
 jobs:
-  presubmit:
+  postsubmit:
+    if: github.event.pull_request.merged == true
     environment: AWS
     runs-on: ubuntu-latest
     steps:
