@@ -3,6 +3,8 @@ on:
     branches:
       - main
 
+permissions: write-all
+
 jobs:
   watch_k8s_releases:
     runs-on: ubuntu-latest
