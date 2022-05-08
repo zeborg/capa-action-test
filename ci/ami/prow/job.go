@@ -59,7 +59,7 @@ func Job() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
@@ -76,7 +76,7 @@ func Job() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
@@ -92,7 +92,7 @@ func Job() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
@@ -108,7 +108,7 @@ func Job() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
@@ -124,7 +124,7 @@ func Job() {
 					log.Println(fmt.Sprintf("Info: Building AMI for OS %s", os))
 					log.Println(fmt.Sprintf("Info: flags:  \"%s\"", flags))
 
-					stderr, stdout, err = custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
+					stderr, stdout, err := custom.Shell(fmt.Sprintf("cd image-builder/images/capi && PACKER_FLAGS=\"%s\" make build-ami-%s", flags, os))
 					custom.CheckError(err)
 					if stderr != "" {
 						log.Fatalf("Error: %s", stderr)
