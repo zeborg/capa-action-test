@@ -18,7 +18,7 @@ jobs:
     - name: Test GitHub API
       run: |
         cd ci/ami
-        go run github-action/github.go
+        go run github-action/main.go
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CAPA_ACTION_BASE_BRANCH: "main"
