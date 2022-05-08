@@ -36,7 +36,7 @@ jobs:
         chmod +x clusterawsadm
         go run prow/main.go
       env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
           AMI_BUILD_CONFIG_DEFAULTS: "AMIBuildConfigDefaults.json"
           AMI_BUILD_SUPPORTED_OS: "amazon-2"
