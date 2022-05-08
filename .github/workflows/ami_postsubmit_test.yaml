@@ -32,7 +32,7 @@ jobs:
         mv bin/clusterawsadm ../clusterawsadm
         cd ..
         chmod +x clusterawsadm
-        go run main.go -mode postsubmit
+        go run main.go -mode prow
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"

@@ -10,7 +10,7 @@ import (
 	"github.com/zeborg/capa-action-test/custom"
 )
 
-func Postsubmit() {
+func Job() {
 	AMIBuildConfigFilename := os.Getenv("AMI_BUILD_CONFIG_FILENAME")
 	AMIBuildConfigDefaultsFilename := os.Getenv("AMI_BUILD_CONFIG_DEFAULTS")
 

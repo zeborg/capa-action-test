@@ -14,10 +14,8 @@ func main() {
 
 	if *mode == "github" {
 		ghaction.GH()
-	} else if *mode == "presubmit" {
-		prow.Presubmit()
-	} else if *mode == "postsubmit" {
-		prow.Postsubmit()
+	} else if *mode == "prow" {
+		prow.Job()
 	} else if *mode == "" {
 		log.Fatal("Error: No value provided for 'mode' flag")
 	} else {
