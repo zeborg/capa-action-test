@@ -22,7 +22,7 @@ jobs:
         cd ci/ami
         go run github-action/main.go
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           CAPA_ACTION_BASE_BRANCH: "main"
           CAPA_ACTION_HEAD_BRANCH: "test-ref-2"
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
