@@ -35,7 +35,8 @@ func main() {
 		log.Println("Debugging: L35")
 
 		if stderr != "" {
-			log.Fatalf("Error: %s", stderr)
+			log.Printf("STDOUT: %s", stdout)
+			log.Fatalf("STDERR: %s", stderr)
 		} else if stdout == "" {
 			log.Printf("Info: Building AMI for Kubernetes %s.", v)
 			kubernetes_semver := v
