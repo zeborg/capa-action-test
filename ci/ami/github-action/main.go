@@ -1,4 +1,4 @@
-package github
+package main
 
 import (
 	"encoding/json"
@@ -13,7 +13,7 @@ import (
 	"github.com/zeborg/capa-action-test/custom"
 )
 
-func GH() {
+func main() {
 	var m2, m3 string
 	url := "https://storage.googleapis.com/kubernetes-release/release/stable.txt"
 	k8sReleaseResponse, err := http.Get(url)

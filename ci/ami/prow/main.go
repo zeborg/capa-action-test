@@ -1,4 +1,4 @@
-package prow
+package main
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"github.com/zeborg/capa-action-test/custom"
 )
 
-func Job() {
+func main() {
 	AMIBuildConfigFilename := os.Getenv("AMI_BUILD_CONFIG_FILENAME")
 	AMIBuildConfigDefaultsFilename := os.Getenv("AMI_BUILD_CONFIG_DEFAULTS")
 
