@@ -24,10 +24,6 @@ func CheckError(err error) {
 	}
 }
 
-func (r *ReleaseVersion) toString() string {
-	return "v" + strconv.Itoa(r.Major) + "." + strconv.Itoa(r.Minor) + "." + strconv.Itoa(r.Patch)
-}
-
 func BuildReleaseVersion(ver string) ReleaseVersion {
 	verSplit := strings.Split(ver, ".")
 	major, err := strconv.Atoi(strings.ReplaceAll(verSplit[0], "v", ""))
