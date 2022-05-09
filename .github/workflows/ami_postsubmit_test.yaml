@@ -13,6 +13,13 @@ jobs:
     environment: AWS
     runs-on: ubuntu-latest
     steps:
+    - name: Generate Token
+      uses: tibdex/github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
     - name: Checkout
       uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # v2.4.0
 
@@ -36,7 +43,7 @@ jobs:
         chmod +x clusterawsadm
         go run prow/main.go
       env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
           AMI_BUILD_CONFIG_DEFAULTS: "AMIBuildConfigDefaults.json"
           AMI_BUILD_SUPPORTED_OS: "amazon-2"
