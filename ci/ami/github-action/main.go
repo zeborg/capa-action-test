@@ -178,22 +178,22 @@ func Action(blobBytes []byte, AMIBuildConfigFilename string) bool {
 	prCreated, err := CreatePR(client, ctx, false, prTitle, prHeadRef, prBaseRef, prBody)
 	custom.CheckError(err)
 
-	prState := "closed"
+	// prState := "closed"
 
-	prClosedStruct := &github.PullRequest{
-		State: &prState,
-	}
-	prClosed, _, err := client.PullRequests.Edit(ctx, OWNER, REPO, *prCreated.Number, prClosedStruct)
-	custom.CheckError(err)
-	log.Printf("Info: Closed PR %d", *prClosed.Number)
+	// prClosedStruct := &github.PullRequest{
+	// 	State: &prState,
+	// }
+	// prClosed, _, err := client.PullRequests.Edit(ctx, OWNER, REPO, *prCreated.Number, prClosedStruct)
+	// custom.CheckError(err)
+	// log.Printf("Info: Closed PR %d", *prClosed.Number)
 
-	prState = "open"
-	prOpenedStruct := &github.PullRequest{
-		State: &prState,
-	}
-	prOpened, _, err := client.PullRequests.Edit(ctx, OWNER, REPO, *prCreated.Number, prOpenedStruct)
-	custom.CheckError(err)
-	log.Printf("Info: Opened PR %d", *prOpened.Number)
+	// prState = "open"
+	// prOpenedStruct := &github.PullRequest{
+	// 	State: &prState,
+	// }
+	// prOpened, _, err := client.PullRequests.Edit(ctx, OWNER, REPO, *prCreated.Number, prOpenedStruct)
+	// custom.CheckError(err)
+	// log.Printf("Info: Opened PR %d", *prOpened.Number)
 
 	// add labels to the newly created pr
 	labels := []string{"ami-build-action"}
