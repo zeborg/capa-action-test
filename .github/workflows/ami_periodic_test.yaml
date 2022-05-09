@@ -9,6 +9,13 @@ jobs:
   watch_k8s_releases:
     runs-on: ubuntu-latest
     steps:
+    - name: Generate Token
+      uses: tibdex/github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
     - name: Checkout
       uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # v2.4.0
 
@@ -22,7 +29,7 @@ jobs:
         cd ci/ami
         go run github-action/main.go
       env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           CAPA_ACTION_BASE_BRANCH: "main"
           CAPA_ACTION_HEAD_BRANCH: "test-ref-2"
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
