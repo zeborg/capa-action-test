@@ -26,7 +26,7 @@ jobs:
           CAPA_ACTION_BASE_BRANCH: "main"
           CAPA_ACTION_HEAD_BRANCH: "test-ref-2"
           AMI_BUILD_CONFIG_FILENAME: "AMIBuildConfig.json"
-          CAPA_ACTION_PR_REVIEWERS: "zeborg,zebhinav"
+          CAPA_ACTION_PR_REVIEWERS: "zebhinav"
           CAPA_ACTION_PR_ASSIGNEES: "zeborg,zebhinav"
           CAPA_ACTION_DEFAULTS: "Defaults.json"
           CAPA_ACTION_TEMPLATE: "Template.json"
